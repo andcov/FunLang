@@ -389,9 +389,9 @@ namespace FunLang
 		public override Expression eval(Env env)
 		{
 			var res = body.eval(env);
-			if (res.GetFType() == FType.FList && ((FList)res).Count() == 1)
-				return ((FList)res)[0];
-			else
+			if (res.GetFType() == FType.FList && ((FList)res).Count >= 1)
+                return ((FList)res)[((FList)res).Count - 1]; // return last element
+            else
 				return res;
 		}
 

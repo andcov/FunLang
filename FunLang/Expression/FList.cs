@@ -21,7 +21,7 @@ namespace FunLang
         {
             if (this.isListOf(FType.FNull)) return new FNull(tok);
 
-            if (this.Count() == 1  // has one element
+            if (this.Count == 1  // has one element
                     && this[0].eval(env).GetFType() == FType.FFunction) // that is a function
             {
                 return this[0].eval(env);
@@ -30,10 +30,10 @@ namespace FunLang
             var res = new FList(new Token());
             var unwrap = false;
 
-            for (int i = 0; i < this.Count(); ++i)
+            for (int i = 0; i < this.Count; ++i)
             {
                 if (this[i].GetFType() == FType.FList // we have a list
-                    && ((FList)this[i]).Count() == 1  // with one element
+                    && ((FList)this[i]).Count == 1  // with one element
                     && ((FList)this[i])[0].eval(env).GetFType() == FType.FFunction) // that is a function
                 {
                     res.Add(((FList)this[i])[0].eval(env));
@@ -71,7 +71,7 @@ namespace FunLang
                     }
                 }
             }
-            if (unwrap && res.Count() == 1)
+            if (unwrap && res.Count == 1)
             {
                 return res[0];
             }
@@ -81,16 +81,16 @@ namespace FunLang
 
         public (FList, int) evalNFrom(Env env, int i, int n)
         {
-            if (this.Count() - i < n)
+            if (this.Count - i < n)
             {
-                throw new InvalidOperationException($"Not enough symbols to evaluate {n}, {i}, {this.Count()}: {this}");
+                throw new InvalidOperationException($"Not enough symbols to evaluate {n}, {i}, {this.Count}: {this}");
             }
 
             Expression first;
             var last_i = i;
 
             if (this[i].GetFType() == FType.FList // we have a list
-                    && ((FList)this[i]).Count() == 1  // with one element
+                    && ((FList)this[i]).Count == 1  // with one element
                     && ((FList)this[i])[0].eval(env).GetFType() == FType.FFunction) // that is a function
             {
                 first = ((FList)this[i])[0].eval(env);
@@ -149,7 +149,7 @@ namespace FunLang
             {
                 res += e.ToString() + ", ";
             }
-            if (this.Count() > 0)
+            if (this.Count > 0)
             {
                 res = res.Remove(res.Length - 2);
             }
@@ -159,8 +159,8 @@ namespace FunLang
         {
             if (exp.GetFType() != FType.FList) return false;
             var other = (FList)exp;
-            if (other.Count() != this.Count()) return false;
-            for (int i = 0; i < this.Count(); ++i)
+            if (other.Count != this.Count) return false;
+            for (int i = 0; i < this.Count; ++i)
             {
                 if (!this[i].Equals(other[i])) return false;
             }

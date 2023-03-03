@@ -30,14 +30,21 @@ namespace FunLang
 			{
 				env[sym.name] = vals.eval(env);
 			}
-			else if (list != null && vals.GetFType() == FType.FList)
+			else if (list != null)
 			{
-				var lvals = (FList)vals;
-				for (int i = 0; i < list.Count(); ++i)
+				var eval_vals = vals.eval(env);
+				if(eval_vals.GetFType() == FType.FList && ((FList)eval_vals).Count == list.Count)
 				{
-					var sym = (FSymbol)list[i];
-					env[sym.name] = lvals[i].eval(env);
-				}
+                    var list_vals = (FList)eval_vals;
+                    for (int i = 0; i < list.Count; ++i)
+                    {
+                        var sym = (FSymbol)list[i];
+                        env[sym.name] = list_vals[i];
+                    }
+                } else
+				{
+                    throw new InvalidOperationException("Could not create list out of right side of definition");
+                }
 			}
 
 			return new FNull(tok);
