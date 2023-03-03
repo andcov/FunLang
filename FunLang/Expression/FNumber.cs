@@ -11,13 +11,15 @@ namespace FunLang
 		{
 			i = _i;
 			f = null;
+			tok = new Token();
 		}
 
 		public FNumber(float _f)
 		{
 			f = _f;
 			i = null;
-		}
+            tok = new Token();
+        }
 
 		public FNumber(int _i, Token _tok)
 		{

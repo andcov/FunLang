@@ -6,7 +6,7 @@ namespace FunLang
 		public List<FSymbol> parameters = new List<FSymbol>();
 		public Env env = new Env();
 		public bool isClosure;
-		public Token tok { get; set; }
+		public Token tok { get; set; } = new Token();
 		
 
 		public abstract Expression eval(Env env);

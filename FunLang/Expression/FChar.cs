@@ -6,11 +6,6 @@ namespace FunLang
 		public char ch;
         public Token tok { get; set; }
 
-        public FChar(char _ch)
-		{
-			ch = _ch;
-		}
-
 		public FChar(char _ch, Token _tok)
 		{
 			ch = _ch;

@@ -6,13 +6,15 @@ namespace FunLang
     {
         public Token tok { get; set; }
 
-        public FList()
+        public FList(Token _tok)
         {
+            tok = _tok;
         }
 
-        public FList(Expression exp)
+        public FList(Expression exp, Token _tok)
         {
             this.Add(exp);
+            tok = _tok;
         }
 
         public Expression eval(Env env)
@@ -25,7 +27,7 @@ namespace FunLang
                 return this[0].eval(env);
             }
 
-            var res = new FList();
+            var res = new FList(new Token());
             var unwrap = false;
 
             for (int i = 0; i < this.Count(); ++i)
@@ -48,7 +50,7 @@ namespace FunLang
                     {
                         unwrap = true;
                         var func = (FCallable)ev;
-                        var args = new FList();
+                        var args = new FList(new Token());
                         (args, var next_i) = evalNFrom(env, i + 1, func.ParamCount());
 
                         var func_env = new Env();
@@ -76,6 +78,7 @@ namespace FunLang
 
             return res;
         }
+
         public (FList, int) evalNFrom(Env env, int i, int n)
         {
             if (this.Count() - i < n)
@@ -104,7 +107,7 @@ namespace FunLang
                 if (first.GetFType() == FType.FCallable)
                 {
                     var func = (FCallable)first;
-                    var args = new FList();
+                    var args = new FList(new Token());
                     (args, last_i) = evalNFrom(env, i + 1, func.ParamCount());
 
                     var func_env = new Env();
@@ -120,7 +123,7 @@ namespace FunLang
             }
             if (n == 1)
             {
-                return (new FList(first), last_i);
+                return (new FList(first, new Token()), last_i);
             }
 
             var (rest, new_i) = evalNFrom(env, last_i + 1, n - 1);
@@ -166,7 +169,7 @@ namespace FunLang
 
         public object Clone()
         {
-            var res = new FList();
+            var res = new FList(tok);
             foreach (var el in this)
             {
                 res.Add((Expression)(el.Clone()));

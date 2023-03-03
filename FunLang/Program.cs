@@ -27,7 +27,7 @@ internal class Program
         var program = new FunLang(
             """
             (
-                if 1 (1 2) ((0))
+                if 0 (1 2) (('u'))
             )
             """);
 
@@ -127,8 +127,7 @@ public class FunLang {
 
         if (token.Value() == "(")
         {
-            FList list = new FList();
-            list.tok = token;
+            FList list = new FList(token);
 
             while (tokens[0].Value() != ")")
             {
@@ -145,9 +144,9 @@ public class FunLang {
         }
         else if (token.Value() == "lambda")
         {
-            var func = new FFunction(token);
-            var param = read_from_tokens(tokens);
+            var parameters = new List<FSymbol>();
 
+            var param = read_from_tokens(tokens);
             if (param.GetFType() != FType.FSymbol)
             {
                 if (param.GetFType() != FType.FList)
@@ -164,13 +163,11 @@ public class FunLang {
                 {
                     sym_param.Add((FSymbol)sym);
                 }
-                func.parameters = sym_param;
+                parameters = sym_param;
             }
             else
             {
-                var l_param = new List<FSymbol>();
-                l_param.Add((FSymbol)param);
-                func.parameters = l_param;
+                parameters.Add((FSymbol)param);
             }
 
             var arrow_token = tokens.First();
@@ -186,9 +183,7 @@ public class FunLang {
                 throw new InvalidOperationException("The body of a function should be surrounded by parentheses");
             }
 
-            func.body = body;
-
-            return func;
+            return new FFunction(parameters, body, token);
         }
         else if (token.Value() == "define")
         {
@@ -209,10 +204,11 @@ public class FunLang {
         }
         else if (token.Value() == "if")
         {
+            var curr_tok = (Token)token.Clone();
             var cond = read_from_tokens(tokens);
             var then = read_from_tokens(tokens);
             var other = read_from_tokens(tokens);
-            return new FIf(cond, then, other);
+            return new FIf(cond, then, other, curr_tok);
         }
         else // a number, a char, a string or a symbol
         {
@@ -235,8 +231,7 @@ public class FunLang {
             }
             else if (token.Value()[0] == '"')
             {
-                var str_list = new FList();
-                str_list.tok = token;
+                var str_list = new FList(token);
                 for(int j = 1; j < token.Value().Length - 1; ++j)
                 {
                     str_list.Add(new FChar(token.Value()[j], token));

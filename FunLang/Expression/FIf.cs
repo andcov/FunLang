@@ -9,11 +9,12 @@ namespace FunLang
         public Expression other;
         public Token tok { get; set; }
 
-        public FIf(Expression _condition, Expression _then, Expression _other)
+        public FIf(Expression _condition, Expression _then, Expression _other, Token _tok)
         {
             condition = _condition;
             then = _then;
             other = _other;
+            tok = _tok;
         }
 
         public Expression eval(Env env)
@@ -73,7 +74,7 @@ namespace FunLang
 
         public object Clone()
         {
-            return new FIf((Expression)condition.Clone(), (Expression)then.Clone(), (Expression)other.Clone());
+            return new FIf((Expression)condition.Clone(), (Expression)then.Clone(), (Expression)other.Clone(), (Token)tok.Clone());
         }
         public FType GetFType() { return FType.FIf; }
     }

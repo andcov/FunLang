@@ -9,6 +9,7 @@ namespace FunLang
         public FSymbol(string _name)
         {
             name = _name;
+            tok = new Token();
         }
 
         public FSymbol(string _name, Token _tok)
@@ -19,7 +20,7 @@ namespace FunLang
 
         public Expression eval(Env env)
         {
-            if (env.TryGetValue(name, out Expression e))
+            if (env.TryGetValue(name, out Expression? e))
             {
                 return e;
             }

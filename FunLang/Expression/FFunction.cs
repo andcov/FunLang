@@ -15,11 +15,6 @@ namespace FunLang
 			tok = _tok;
 		}
 
-		public FFunction(Token _tok)
-		{
-			tok = _tok;
-		}
-
 		public Expression eval(Env env)
 		{
 			return this;
