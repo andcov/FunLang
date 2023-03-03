@@ -4,9 +4,9 @@ namespace FunLang
 	public class Env : Dictionary<string, Expression>, ICloneable
     {
 		public void AddStandard() {
-			this["+"] = new Adder();
-            this["-"] = new Substracter();
-            this["*"] = new Multiplier();
+			this["+"] = new Add();
+            this["-"] = new Substract();
+            this["*"] = new Multiply();
 
             this["=="] = new Equal();
 

@@ -27,24 +27,7 @@ internal class Program
         var program = new FunLang(
             """
             (
-                define fib lambda n =>
-                (
-                    if (== 0 n)
-                    (
-                        0
-                    )
-                    (
-                        if (== 1 n)
-                        (
-                            1
-                        )
-                        (
-                            + fib (- n 1) fib (- n 2)
-                        )
-                    )
-                )
-
-                fib 9
+                if 1 (1 2) ((0))
             )
             """);
 
@@ -145,7 +128,7 @@ public class FunLang {
         if (token.Value() == "(")
         {
             FList list = new FList();
-            list.SetToken(token);
+            list.tok = token;
 
             while (tokens[0].Value() != ")")
             {
@@ -253,7 +236,7 @@ public class FunLang {
             else if (token.Value()[0] == '"')
             {
                 var str_list = new FList();
-                str_list.SetToken(token);
+                str_list.tok = token;
                 for(int j = 1; j < token.Value().Length - 1; ++j)
                 {
                     str_list.Add(new FChar(token.Value()[j], token));
@@ -297,7 +280,11 @@ public class FunLang {
                 next_pos += l.Length;
                 if(tok.position >= position && tok.position < next_pos)
                 {
-                    return (l + "\n" + (new string(' ', tok.position - position)) + "^");
+                    if(tok.position == null)
+                    {
+                        throw new InvalidOperationException("Tried to use null token");
+                    }
+                    return (l + "\n" + (new string(' ', tok.position.Value - position)) + "^");
                 }
             }
         }
@@ -307,15 +294,27 @@ public class FunLang {
 
 public class Token : ICloneable
 {
-    public string token;
-    public int position;
+    public string? token = null;
+    public int? position = null;
 
-    public Token(string _token, int _position) {
+    public Token()
+    {
+        token = null;
+        position = null;
+    }
+
+    public Token(string? _token, int? _position) {
         token = _token;
         position = _position;
     }
 
-    public string Value() { return token; }
+    public string Value() {
+        if(token != null)
+        {
+            return token;
+        }
+        return "";
+    }
 
     public override string ToString()
     {
