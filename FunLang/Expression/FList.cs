@@ -22,27 +22,10 @@ namespace FunLang
             var res = new FList(new Token());
             var unwrap = false;
 
-            if (this.Count == 1)
-            {
-                var firstEv = this[0].eval(env);
-                if(firstEv.GetFType() == FType.FFunction)
-                {
-                    return firstEv;
-                }
-                res.Add(firstEv);
-                return res;
-            }
-
             for (int i = 0; i < this.Count; ++i)
             {
                 var ev = this[i].eval(env);
-                if (ev.GetFType() == FType.FFunction &&
-                    !(this[i].GetFType() == FType.FList
-                    && ((FList)this[i]).Count == 0)) // we have a function that did not result from an unwraped list
-                {
-                    var func = (FFunction)ev;
-                    ev = func.GetFCallable();
-                }
+
                 if (ev.GetFType() == FType.FCallable)
                 {
                     unwrap = true;
@@ -84,13 +67,6 @@ namespace FunLang
 
             first = this[i].eval(env);
 
-            if (first.GetFType() == FType.FFunction &&
-                    !(this[i].GetFType() == FType.FList
-                    && ((FList)this[i]).Count == 1)) // we have a function that did not result from an unwraped list
-            {
-                var func = (FFunction)first;
-                first = func.GetFCallable();
-            }
             if (first.GetFType() == FType.FCallable)
             {
                 var func = (FCallable)first;

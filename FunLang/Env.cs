@@ -8,6 +8,8 @@ namespace FunLang
             this["-"] = new Substract();
             this["*"] = new Multiply();
 
+            this["%"] = new Mod();
+
             this["=="] = new Equal();
             this["!="] = new Different();
 

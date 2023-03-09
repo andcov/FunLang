@@ -1,24 +1,6 @@
 ﻿using System.Xml.Linq;
-/*using static System.Runtime.InteropServices.JavaScript.JSType;*/
 
 namespace FunLang;
-
-/*
-
-define map lambda (f l) => (
-if l
-(
-	define r (map (f) (rest l))
-	push (f first l) r
-)
-(
-	()
-)
-)
-
-map (lambda x => (+ 5 x)) (1 2 3)
-
-*/
 
 internal class Program
 {
@@ -28,33 +10,27 @@ internal class Program
 """
 (
 
-define map lambda (f l) => (
-	if l
-	(
-		(push f first l map (f) rest l)
-	)
-	(
+define Map lambda (F l) => (
+	if l then (
+		(push f first l map F rest l)
+	) else (
 		()
 	)
 )
 
-define filter lambda (f l) => (
-	if l
-	(
-		if (f first l)
-		(
-			(push first l filter (f) rest l)
+define Filter lambda (F l) => (
+	if l then (
+		if (f first l) then (
+			(push first l filter F rest l)
+		) else (
+			(filter F rest l)
 		)
-		(
-			(filter (f) rest l)
-		)
-	)
-	(
+	) else (
 		()
 	)
 )
 
-println map (lambda x => (* x 2)) filter (lambda x => (== x 5)) (1 2 5 3 4 5 1 2 3 4 5 6 7 8 5 5)
+println map lambda x => (+ 5 x) filter lambda x => (== 0 % x 2) (1 2 5 3 4 5 1 2 3 4 5 6 7 8 5 5 24)
 
 )
 """);
@@ -124,7 +100,7 @@ public class FunLang {
 			}
 		}
 
-			int position = 0;
+		int position = 0;
 		foreach(var l in split_code)
 		{
 			if(l.Length == 0)
@@ -234,8 +210,23 @@ public class FunLang {
 		{
 			var curr_tok = (Token)token.Clone();
 			var cond = read_from_tokens(tokens);
+
+			var then_token = tokens.First();
+			tokens.RemoveAt(0);
+			if(then_token.Value() != "then")
+			{
+				throw new InvalidOperationException("Unknown token; expected 'then'");
+			}
 			var then = read_from_tokens(tokens);
+
+			var else_token = tokens.First();
+			tokens.RemoveAt(0);
+			if(else_token.Value() != "else")
+			{
+				throw new InvalidOperationException("Unknown token; expected 'else'");
+			}
 			var other = read_from_tokens(tokens);
+
 			return new FIf(cond, then, other, curr_tok);
 		}
 		else // a number, a char, a string or a symbol

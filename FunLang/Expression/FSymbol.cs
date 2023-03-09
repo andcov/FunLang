@@ -23,6 +23,22 @@ namespace FunLang
             if (env.TryGetValue(name, out Expression? e))
             {
                 return e;
+            } else if (Char.IsLower(this.name[0]))
+            {
+                var lower_name = Char.ToUpper(name[0]) + name.Substring(1);
+                if (env.TryGetValue(lower_name, out Expression? func))
+                {
+                    if(func.GetFType() == FType.FFunction) {
+                        return ((FFunction)func).GetFCallable();
+                    } else
+                    {
+                        throw new InvalidOperationException("Cannot find the symbol " + name);
+                    }
+                } else
+                {
+                    throw new InvalidOperationException("Cannot find the symbol " + name);
+                }
+
             }
             throw new InvalidOperationException("Cannot find the symbol " + name);
         }

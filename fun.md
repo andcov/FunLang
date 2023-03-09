@@ -23,8 +23,8 @@ define (l1 l2) ((2 3) (4 "a")) // a bunch of lists
 
 # If block
 ```
-if cond (+ 2 3) (- 4 5) // will return 5 or -1
-if cond 4 5
+if (== 1 0) then (+ 2 3) else (- 4 5)
+if 9 then 4 else 5
 ```
 An if expression always returns the last element of the list that it evaluated. For example, `if 1 (3 4) (9 0)` will return 4.
 
@@ -32,33 +32,52 @@ An if expression always returns the last element of the list that it evaluated. 
 ```
 lambda x => (* 2 x)
 lambda (x y z) => (+ * x y z)
-define f (lambda x => (1000 * 2 x))
+define F lambda x => (1000 * 2 x)
 ```
 
-A function always returns the last element of the list that it evaluated. For example, `f 4` will return 8, even though the list it evaluated turned out to be (1000 8).
+All functions must begin with an uppercase letter;
 
 ## Function call
 ```
-(f x)
-f x
-(f x y)
-f x y
+define F lambda x => (1000 * 2 x)
+f 15
+(f 15)
 ```
 
-A function call can or cannot be surrounded by parantheses. As such, if you want to get a list with the result of `f x y`, you would need to do `((f x y))`, `list (f x y)` or `list f x y`.
+In order to call a function, you lowercase the first letter.
+A function call can or cannot be surrounded by parantheses.
 
+A function always returns the last element of the list that it evaluated. For example, `f 4` will return 8, even though the list it evaluated turned out to be (1000 8).
 
 Example:
 ```
 (
-define map lambda (f l) => (
-if l
-    (push (f first l) (map f (rest l)))
-    (0)
+
+define Map lambda (F l) => (
+	if l then (
+		(push f first l map F rest l)
+	) else (
+		()
+	)
 )
-map (lambda x => (+ 5 x)) (1 2 3 4)
+
+define Filter lambda (F l) => (
+	if l then (
+		if (f first l) then (
+			(push first l filter F rest l)
+		) else (
+			(filter F rest l)
+		)
+	) else (
+		()
+	)
+)
+
+println map lambda x => (+ 5 x) filter lambda x => (== 0 % x 2) (1 2 5 3 4 5 1 2 3 4 5 6 7 8 5 5 24)
+
 )
 ```
+This will output `7 9 7 9 11 13 29`
 
 ## Functions
  - not e      : takes the logical value of the expression and negates it

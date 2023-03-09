@@ -221,7 +221,44 @@ namespace FunLang
 
         public override object Clone()
         {
-            return new Equal();
+            return new Different();
+        }
+    }
+
+    public class Mod : FCallable
+    {
+        public Mod()
+        {
+            var x = new FSymbol("__x__");
+            var y = new FSymbol("__y__");
+            isClosure = false;
+
+            parameters.Add(x);
+            parameters.Add(y);
+        }
+
+        public override Expression eval(Env env)
+        {
+            var arg1 = env[parameters[0].name];
+            var arg2 = env[parameters[1].name];
+			if(arg1.GetFType() != FType.FNumber || arg2.GetFType() != FType.FNumber)
+			{
+                throw new InvalidOperationException("Can only take modulos out of integers");
+            }
+			var num1 = (FNumber)arg1;
+            var num2 = (FNumber)arg2;
+
+            if (num1.i == null || num2.i == null)
+            {
+                throw new InvalidOperationException("Can only take modulos out of integers");
+            }
+
+            return new FNumber(num1.i.Value % num2.i.Value);
+        }
+
+        public override object Clone()
+        {
+            return new Mod();
         }
     }
 
