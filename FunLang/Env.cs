@@ -9,6 +9,7 @@ namespace FunLang
             this["*"] = new Multiply();
 
             this["=="] = new Equal();
+            this["!="] = new Different();
 
             this["length"] = new Length();
             this["first"] = new First();

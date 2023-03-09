@@ -26,13 +26,13 @@ namespace FunLang
 
 		public Expression eval(Env env)
 		{
-			if (sym != null)
+            var eval_vals = vals.eval(env);
+            if (sym != null)
 			{
-				env[sym.name] = vals.eval(env);
+				env[sym.name] = eval_vals;
 			}
 			else if (list != null)
 			{
-				var eval_vals = vals.eval(env);
 				if(eval_vals.GetFType() == FType.FList && ((FList)eval_vals).Count == list.Count)
 				{
                     var list_vals = (FList)eval_vals;
@@ -47,7 +47,7 @@ namespace FunLang
                 }
 			}
 
-			return new FNull(tok);
+			return new FNumber(-1000);
 		}
 
 		public override string ToString()

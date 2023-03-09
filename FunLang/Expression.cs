@@ -22,6 +22,5 @@ namespace FunLang
 		FDefine,
 		FCallable,
 		FIf,
-		FNull,
 	}
 }

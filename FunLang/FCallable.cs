@@ -197,7 +197,35 @@ namespace FunLang
 		}
 	}
 
-	public class Length : FCallable
+    public class Different : FCallable
+    {
+        public Different()
+        {
+            var x = new FSymbol("__x__");
+            var y = new FSymbol("__y__");
+            isClosure = false;
+
+            parameters.Add(x);
+            parameters.Add(y);
+        }
+
+        public override Expression eval(Env env)
+        {
+            var arg1 = env[parameters[0].name];
+            var arg2 = env[parameters[1].name];
+            if (!arg1.Equals(arg2))
+                return new FNumber(1);
+            else
+                return new FNumber(0);
+        }
+
+        public override object Clone()
+        {
+            return new Equal();
+        }
+    }
+
+    public class Length : FCallable
 	{
 		public Length()
 		{
@@ -365,8 +393,8 @@ namespace FunLang
 			var arg1 = env[parameters[0].name];
 			Console.WriteLine(arg1);
 
-			return new FNull(this.tok);
-		}
+            return new FNumber(-1000);
+        }
 
 		public override object Clone()
 		{

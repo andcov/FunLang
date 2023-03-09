@@ -19,57 +19,50 @@ namespace FunLang
 
         public Expression eval(Env env)
         {
-            if (this.isListOf(FType.FNull)) return new FNull(tok);
-
-            if (this.Count == 1  // has one element
-                    && this[0].eval(env).GetFType() == FType.FFunction) // that is a function
-            {
-                return this[0].eval(env);
-            }
-
             var res = new FList(new Token());
             var unwrap = false;
 
+            if (this.Count == 1)
+            {
+                var firstEv = this[0].eval(env);
+                if(firstEv.GetFType() == FType.FFunction)
+                {
+                    return firstEv;
+                }
+                res.Add(firstEv);
+                return res;
+            }
+
             for (int i = 0; i < this.Count; ++i)
             {
-                if (this[i].GetFType() == FType.FList // we have a list
-                    && ((FList)this[i]).Count == 1  // with one element
-                    && ((FList)this[i])[0].eval(env).GetFType() == FType.FFunction) // that is a function
+                var ev = this[i].eval(env);
+                if (ev.GetFType() == FType.FFunction &&
+                    !(this[i].GetFType() == FType.FList
+                    && ((FList)this[i]).Count == 0)) // we have a function that did not result from an unwraped list
                 {
-                    res.Add(((FList)this[i])[0].eval(env));
+                    var func = (FFunction)ev;
+                    ev = func.GetFCallable();
                 }
-                else
+                if (ev.GetFType() == FType.FCallable)
                 {
-                    var ev = this[i].eval(env);
-                    if (ev.GetFType() == FType.FFunction)
-                    {
-                        var func = (FFunction)ev;
-                        ev = func.GetFCallable();
-                    }
-                    if (ev.GetFType() == FType.FCallable)
-                    {
-                        unwrap = true;
-                        var func = (FCallable)ev;
-                        var args = new FList(new Token());
-                        (args, var next_i) = evalNFrom(env, i + 1, func.ParamCount());
+                    unwrap = true;
+                    var func = (FCallable)ev;
+                    var args = new FList(new Token());
+                    (args, var next_i) = evalNFrom(env, i + 1, func.ParamCount());
 
-                        var func_env = new Env();
-                        if (func.isClosure)
-                            func_env = (Env)env.Clone();
-                        else
-                            func_env.AddStandard();
+                    var func_env = new Env();
+                    if (func.isClosure)
+                        func_env = (Env)env.Clone();
+                    else
+                        func_env.AddStandard();
 
-                        func_env.AddArguments(func.parameters, args);
+                    func_env.AddArguments(func.parameters, args);
 
-                        ev = func.eval(func_env);
-                        i = next_i;
-                    }
-
-                    if (ev.GetFType() != FType.FNull)
-                    {
-                        res.Add(ev);
-                    }
+                    ev = func.eval(func_env);
+                    i = next_i;
                 }
+                    
+                res.Add(ev);
             }
             if (unwrap && res.Count == 1)
             {
@@ -89,38 +82,32 @@ namespace FunLang
             Expression first;
             var last_i = i;
 
-            if (this[i].GetFType() == FType.FList // we have a list
-                    && ((FList)this[i]).Count == 1  // with one element
-                    && ((FList)this[i])[0].eval(env).GetFType() == FType.FFunction) // that is a function
+            first = this[i].eval(env);
+
+            if (first.GetFType() == FType.FFunction &&
+                    !(this[i].GetFType() == FType.FList
+                    && ((FList)this[i]).Count == 1)) // we have a function that did not result from an unwraped list
             {
-                first = ((FList)this[i])[0].eval(env);
+                var func = (FFunction)first;
+                first = func.GetFCallable();
             }
-            else
+            if (first.GetFType() == FType.FCallable)
             {
-                first = this[i].eval(env);
+                var func = (FCallable)first;
+                var args = new FList(new Token());
+                (args, last_i) = evalNFrom(env, i + 1, func.ParamCount());
 
-                if (first.GetFType() == FType.FFunction)
-                {
-                    var func = (FFunction)first;
-                    first = func.GetFCallable();
-                }
-                if (first.GetFType() == FType.FCallable)
-                {
-                    var func = (FCallable)first;
-                    var args = new FList(new Token());
-                    (args, last_i) = evalNFrom(env, i + 1, func.ParamCount());
+                var func_env = new Env();
+                if (func.isClosure)
+                    func_env = (Env)env.Clone();
+                else
+                    func_env.AddStandard();
 
-                    var func_env = new Env();
-                    if (func.isClosure)
-                        func_env = (Env)env.Clone();
-                    else
-                        func_env.AddStandard();
+                func_env.AddArguments(func.parameters, args);
 
-                    func_env.AddArguments(func.parameters, args);
-
-                    first = func.eval(func_env);
-                }
+                first = func.eval(func_env);
             }
+
             if (n == 1)
             {
                 return (new FList(first, new Token()), last_i);

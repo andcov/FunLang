@@ -1,5 +1,5 @@
 ﻿using System.Xml.Linq;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+/*using static System.Runtime.InteropServices.JavaScript.JSType;*/
 
 namespace FunLang;
 
@@ -25,44 +25,45 @@ internal class Program
 	private static void Main(string[] args)
 	{
 		var program = new FunLang(
-            """
-			(
+"""
+(
 
-			define map lambda (f l) => (
-				if l
-				(
-					(push (f first l) (map (f) rest l))
-				)
-				(
-					()
-				)
-			)
+define map lambda (f l) => (
+	if l
+	(
+		(push f first l map (f) rest l)
+	)
+	(
+		()
+	)
+)
 
-			define filter lambda (f l) => (
-				if l
-				(
-					define fr (filter (f) rest l)
-					if (f (first l))
-					(
-						((push (first l) fr))
-					)
-					(
-						(fr)
-					)
-				)
-				(
-					()
-				)
-			)
+define filter lambda (f l) => (
+	if l
+	(
+		if (f first l)
+		(
+			(push first l filter (f) rest l)
+		)
+		(
+			(filter (f) rest l)
+		)
+	)
+	(
+		()
+	)
+)
 
-			map (lambda x => (* x 5)) (1 2 3 4)
-			)
-			""");
+println map (lambda x => (* x 2)) filter (lambda x => (== x 5)) (1 2 5 3 4 5 1 2 3 4 5 6 7 8 5 5)
 
-		Console.WriteLine(program.code);
-		Console.WriteLine(program.parse());
-		Console.WriteLine("Res: " + program.evaluate());
-	}
+)
+""");
+
+        Console.WriteLine("Par: " + program.parse());
+        Console.WriteLine("Output: ");
+        var res = program.evaluate();
+        Console.WriteLine("Result:\n" + res);
+    }
 }
 
 public class FunLang {
