@@ -33,7 +33,7 @@ namespace FunLang
 			{
 				res = res.Remove(res.Length - 2);
 			}
-			return $"Func [{res}] => [{body.ToString()}]";
+			return $"Func [{res}] => {body.ToString()}";
 		}
 		public bool Equals(Expression exp)
 		{

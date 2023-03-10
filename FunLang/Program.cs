@@ -10,27 +10,27 @@ internal class Program
 """
 (
 
-define Map lambda (F l) => (
+define map lambda (f l) => (
 	if l then (
-		(push f first l map F rest l)
+		(push f first l map $f rest l)
 	) else (
 		()
 	)
 )
 
-define Filter lambda (F l) => (
+define filter lambda (f l) => (
 	if l then (
 		if (f first l) then (
-			(push first l filter F rest l)
+			(push first l filter $f rest l)
 		) else (
-			(filter F rest l)
+			(filter $f rest l)
 		)
 	) else (
 		()
 	)
 )
 
-println map lambda x => (+ 5 x) filter lambda x => (== 0 % x 2) (1 2 5 3 4 5 1 2 3 4 5 6 7 8 5 5 24)
+println map $lambda x => (+ 5 x) filter $lambda x => (== 0 % x 2) (1 2 5 3 4 5 1 2 3 4 5 6 7 8 5 5 24)
 
 )
 """);
@@ -56,7 +56,8 @@ public class FunLang {
 		var split_code = code.Replace("(", " ( ")
 			.Replace(")", " ) ")
 			.Replace("=>", " => ")
-			.Split(new char[0]).ToList();
+            .Replace("$", " $ ")
+            .Split(new char[0]).ToList();
 
 		for (int i = 0; i < split_code.Count() - 1; ++i)
 		{
@@ -65,7 +66,7 @@ public class FunLang {
 				split_code.Insert(i + 1, "");
 
 			}
-			if (split_code[i] == "(" || split_code[i] == ")" || split_code[i] == "=>")
+			if (split_code[i] == "(" || split_code[i] == ")" || split_code[i] == "=>" || split_code[i] == "$")
 			{
 				if (split_code[i - 1] == "")
 				{
@@ -229,6 +230,10 @@ public class FunLang {
 
 			return new FIf(cond, then, other, curr_tok);
 		}
+		else if (token.Value() == "$")
+		{
+			return new FDollar(token);
+		}
 		else // a number, a char, a string or a symbol
 		{
 
@@ -303,40 +308,5 @@ public class FunLang {
 			}
 		}
 		return "";
-	}
-}
-
-public class Token : ICloneable
-{
-	public string? token = null;
-	public int? position = null;
-
-	public Token()
-	{
-		token = null;
-		position = null;
-	}
-
-	public Token(string? _token, int? _position) {
-		token = _token;
-		position = _position;
-	}
-
-	public string Value() {
-		if(token != null)
-		{
-			return token;
-		}
-		return "";
-	}
-
-	public override string ToString()
-	{
-		return $"<{token}, {position}>";
-	}
-
-	public object Clone()
-	{
-		return new Token(token, position);
 	}
 }

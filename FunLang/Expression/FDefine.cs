@@ -29,10 +29,6 @@ namespace FunLang
             var eval_vals = vals.eval(env);
             if (sym != null)
 			{
-                if (eval_vals.GetFType() == FType.FFunction && Char.IsLower(sym.name[0]))
-                {
-                    throw new InvalidOperationException("All functions must be uppercased");
-                }
                 env[sym.name] = eval_vals;
 			}
 			else if (list != null)
@@ -43,10 +39,6 @@ namespace FunLang
                     for (int i = 0; i < list.Count; ++i)
                     {
                         var sym = (FSymbol)list[i];
-						if (list_vals[i].GetFType() == FType.FFunction && Char.IsLower(sym.name[0]))
-						{
-                            throw new InvalidOperationException("All functions must be uppercased");
-                        }
                         env[sym.name] = list_vals[i];
                     }
                 } else

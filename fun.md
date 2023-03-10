@@ -34,18 +34,17 @@ lambda x => (* 2 x)
 lambda (x y z) => (+ * x y z)
 define F lambda x => (1000 * 2 x)
 ```
-
-All functions must begin with an uppercase letter;
+In order to differentiate between function calls and the function itself, the `$` sign is used. As such, if you want to pass the function `f` as a parameter to another function, use `g $f`
 
 ## Function call
 ```
-define F lambda x => (1000 * 2 x)
+define f lambda x => (1000 * 2 x)
 f 15
 (f 15)
 ```
 
 In order to call a function, you lowercase the first letter.
-A function call can or cannot be surrounded by parantheses.
+A function call can or cannot be surrounded by parantheses. If it is surrounded, it will not be considered a list. In order to create a list with the result of a function call, surround it twice: `((f x))`.
 
 A function always returns the last element of the list that it evaluated. For example, `f 4` will return 8, even though the list it evaluated turned out to be (1000 8).
 
@@ -53,27 +52,27 @@ Example:
 ```
 (
 
-define Map lambda (F l) => (
+define map lambda (f l) => (
 	if l then (
-		(push f first l map F rest l)
+		(push f first l map $f rest l)
 	) else (
 		()
 	)
 )
 
-define Filter lambda (F l) => (
+define filter lambda (f l) => (
 	if l then (
 		if (f first l) then (
-			(push first l filter F rest l)
+			(push first l filter $f rest l)
 		) else (
-			(filter F rest l)
+			(filter $f rest l)
 		)
 	) else (
 		()
 	)
 )
 
-println map lambda x => (+ 5 x) filter lambda x => (== 0 % x 2) (1 2 5 3 4 5 1 2 3 4 5 6 7 8 5 5 24)
+println map $lambda x => (+ 5 x) filter $lambda x => (== 0 % x 2) (1 2 5 3 4 5 1 2 3 4 5 6 7 8 5 5 24)
 
 )
 ```
@@ -96,9 +95,6 @@ This will output `7 9 7 9 11 13 29`
  - product l  : multiplies over l
  - map l f    : runs f for every element of l and returns the resulting list
  - filter l f : runs f for every element of l and returns a list containing the elements for each f is true
-
-# Null
-Some functions return the null value, such as `define` or `println`. This is so as to not pollute lists, because at evaluation, all null values are dropped, as well as al of the lists containing only null values.
 
 # Comments
 `/* comment */`

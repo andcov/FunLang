@@ -21,17 +21,42 @@ namespace FunLang
         {
             var res = new FList(new Token());
             var unwrap = false;
+            var functionator = false;
 
             for (int i = 0; i < this.Count; ++i)
             {
                 var ev = this[i].eval(env);
+
+                if (ev.GetFType() == FType.FDollar)
+                {
+                    functionator = true;
+                    continue;
+                }
+
+                if (ev.GetFType() == FType.FFunction)
+                {
+                    if (functionator)
+                    {
+                        functionator = false;
+                    }
+                    else
+                    {
+                        var call = ((FFunction)ev).GetFCallable();
+                        ev = call;
+                    }
+                }
+
+                if (functionator == true)
+                {
+                    throw new InvalidOperationException("Functionator can only be applied to a function");
+                }
 
                 if (ev.GetFType() == FType.FCallable)
                 {
                     unwrap = true;
                     var func = (FCallable)ev;
                     var args = new FList(new Token());
-                    (args, var next_i) = evalNFrom(env, i + 1, func.ParamCount());
+                    (args, var next_i) = evalNFrom(env, i + 1, func.ParamCount(), false);
 
                     var func_env = new Env();
                     if (func.isClosure)
@@ -55,7 +80,7 @@ namespace FunLang
             return res;
         }
 
-        public (FList, int) evalNFrom(Env env, int i, int n)
+        public (FList, int) evalNFrom(Env env, int i, int n, bool functionator)
         {
             if (this.Count - i < n)
             {
@@ -67,11 +92,22 @@ namespace FunLang
 
             first = this[i].eval(env);
 
+            if (first.GetFType() == FType.FFunction && functionator == false)
+            {
+                var call = ((FFunction)first).GetFCallable();
+                first = call;
+            }
+
+            if (first.GetFType() != FType.FFunction && functionator == true)
+            {
+                throw new InvalidOperationException("Functionator can only be applied to a function");
+            }
+
             if (first.GetFType() == FType.FCallable)
             {
                 var func = (FCallable)first;
                 var args = new FList(new Token());
-                (args, last_i) = evalNFrom(env, i + 1, func.ParamCount());
+                (args, last_i) = evalNFrom(env, i + 1, func.ParamCount(), false);
 
                 var func_env = new Env();
                 if (func.isClosure)
@@ -82,6 +118,9 @@ namespace FunLang
                 func_env.AddArguments(func.parameters, args);
 
                 first = func.eval(func_env);
+            } else if (first.GetFType() == FType.FDollar)
+            {
+                return evalNFrom(env, last_i + 1, n, true);
             }
 
             if (n == 1)
@@ -89,7 +128,7 @@ namespace FunLang
                 return (new FList(first, new Token()), last_i);
             }
 
-            var (rest, new_i) = evalNFrom(env, last_i + 1, n - 1);
+            var (rest, new_i) = evalNFrom(env, last_i + 1, n - 1, false);
             rest.Insert(0, first);
 
             return (rest, new_i);
