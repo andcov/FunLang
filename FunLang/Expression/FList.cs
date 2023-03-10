@@ -147,15 +147,26 @@ namespace FunLang
         public override string ToString()
         {
             var res = "";
-            foreach (var e in this)
+            if (this.Count > 0 && this.isListOf(FType.FChar))
             {
-                res += e.ToString() + ", ";
+                foreach (var ch in this)
+                {
+                    res += ((FChar)ch).ch;
+                }
+                return '"' + res + '"';
             }
-            if (this.Count > 0)
+            else
             {
-                res = res.Remove(res.Length - 2);
+                foreach (var e in this)
+                {
+                    res += e.ToString() + ", ";
+                }
+                if (this.Count > 0)
+                {
+                    res = res.Remove(res.Length - 2);
+                }
+                return $"[{res}]";
             }
-            return $"[{res}]";
         }
         public bool Equals(Expression exp)
         {

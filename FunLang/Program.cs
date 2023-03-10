@@ -32,7 +32,7 @@ define filter lambda (f l) => (
 
 println map $lambda x => (+ 5 x) filter $lambda x => (== 0 % x 2) (1 2 5 3 4 5 1 2 3 4 5 6 7 8 5 5 24)*/
 
-println /*"hello"*/ 3
+println "hello world!"
 
 )
 """);
