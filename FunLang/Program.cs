@@ -10,7 +10,7 @@ internal class Program
 """
 (
 
-define map lambda (f l) => (
+/*define map lambda (f l) => (
 	if l then (
 		(push f first l map $f rest l)
 	) else (
@@ -30,7 +30,9 @@ define filter lambda (f l) => (
 	)
 )
 
-println map $lambda x => (+ 5 x) filter $lambda x => (== 0 % x 2) (1 2 5 3 4 5 1 2 3 4 5 6 7 8 5 5 24)
+println map $lambda x => (+ 5 x) filter $lambda x => (== 0 % x 2) (1 2 5 3 4 5 1 2 3 4 5 6 7 8 5 5 24)*/
+
+println /*"hello"*/ 3
 
 )
 """);
@@ -57,6 +59,8 @@ public class FunLang {
 			.Replace(")", " ) ")
 			.Replace("=>", " => ")
             .Replace("$", " $ ")
+			.Replace("/*", " /* ")
+			.Replace("*/", " */ ")
             .Split(new char[0]).ToList();
 
 		for (int i = 0; i < split_code.Count() - 1; ++i)
@@ -66,7 +70,12 @@ public class FunLang {
 				split_code.Insert(i + 1, "");
 
 			}
-			if (split_code[i] == "(" || split_code[i] == ")" || split_code[i] == "=>" || split_code[i] == "$")
+			if (split_code[i] == "(" ||
+				split_code[i] == ")" ||
+				split_code[i] == "=>" ||
+				split_code[i] == "$" ||
+                split_code[i] == "/*" ||
+                split_code[i] == "*/")
 			{
 				if (split_code[i - 1] == "")
 				{
@@ -136,10 +145,14 @@ public class FunLang {
 
 			while (tokens[0].Value() != ")")
 			{
-				list.Add(read_from_tokens(tokens));
+				var val = read_from_tokens(tokens);
+				if (val != null)
+				{
+					list.Add(val);
+				}
 			}
 
-			tokens.RemoveAt(0); // remove last ')'
+			tokens.RemoveAt(0); // remove ')'
 
 			return list;
 		}
@@ -147,7 +160,22 @@ public class FunLang {
 		{
 			throw new InvalidOperationException("Unexpected ')'");
 		}
-		else if (token.Value() == "lambda")
+		else if (token.Value() == "/*")
+        {
+            while (tokens[0].Value() != "*/")
+            {
+				read_from_tokens(tokens);
+            }
+
+            tokens.RemoveAt(0); // remove '*/'
+
+            return null;
+        }
+        else if (token.Value() == "*/")
+        {
+            throw new InvalidOperationException("Unexpected '*/'");
+        }
+        else if (token.Value() == "lambda")
 		{
 			var parameters = new List<FSymbol>();
 
