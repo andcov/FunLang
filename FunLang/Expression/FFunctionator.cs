@@ -32,7 +32,7 @@ namespace FunLang
         }
         public FType GetFType()
         {
-            return FType.FDollar;
+            return FType.FFunctionator;
         }
     }
 }

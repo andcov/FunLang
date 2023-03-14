@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Xml.Linq;
-
-namespace FunLang
+﻿namespace FunLang
 {
 	public interface Expression : ICloneable
 	{
@@ -22,6 +18,6 @@ namespace FunLang
 		FDefine,
 		FCallable,
 		FIf,
-		FDollar,
+		FFunctionator,
 	}
 }

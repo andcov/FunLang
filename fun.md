@@ -90,7 +90,7 @@ This will output `7 9 7 9 11 13 29`
  - third l    : returns the third element of l, error if l has two elements
  - rest l     : returns everything after the first element of l, error if l is empty
  - length l   : returns the length of l
- - empth l    : checks if l is empty
+ - empty l    : checks if l is empty
  - sum l      : sums over l
  - product l  : multiplies over l
  - map l f    : runs f for every element of l and returns the resulting list

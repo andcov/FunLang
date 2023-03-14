@@ -27,7 +27,7 @@ namespace FunLang
             {
                 var ev = this[i].eval(env);
 
-                if (ev.GetFType() == FType.FDollar)
+                if (ev.GetFType() == FType.FFunctionator)
                 {
                     functionator = true;
                     continue;
@@ -118,7 +118,7 @@ namespace FunLang
                 func_env.AddArguments(func.parameters, args);
 
                 first = func.eval(func_env);
-            } else if (first.GetFType() == FType.FDollar)
+            } else if (first.GetFType() == FType.FFunctionator)
             {
                 return evalNFrom(env, last_i + 1, n, true);
             }

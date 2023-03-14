@@ -1,6 +1,4 @@
-﻿using System.Xml.Linq;
-
-namespace FunLang;
+﻿namespace FunLang;
 
 internal class Program
 {
@@ -9,6 +7,7 @@ internal class Program
 		var program = new FunLang(
 """
 (
+<<<<<<< HEAD
 define map lambda (f l) => (
 	if l then (
 		(push f first l map $f rest l)
@@ -30,13 +29,18 @@ define filter lambda (f l) => (
 )
 
 println map $lambda x => (+ 5 x) filter $lambda x => (== 0 % x 2) (1 2 5 3 4 5 1 2 3 4 5 6 7 8 5 5 24)
+=======
+define map lambda (f l) => (if l then ((push f first l map $f rest l)) else (())) define filter lambda (f l) => (if l then (if (f first l) then ((push first l filter $f rest l)) else ((filter $f rest l))) else (()))define sum lambda l => (if l then (+ first l sum rest l)else (0))
+
+println map $lambda x => (* 8 x) filter $lambda x => (== 0 % x 2) (1 2 3 4 5 6.7)
+>>>>>>> 898b71b (Rename functionator symbol)
 )
 """);
 
-        Console.WriteLine("Par: " + program.parse());
-        Console.WriteLine("Output: ");
-        var res = program.evaluate();
-        Console.WriteLine("Result:\n" + res);
+        Console.WriteLine("Parse: " + program.parse());
+        //Console.WriteLine("Output: ");
+        //var res = program.evaluate();
+        //Console.WriteLine("Result:\n" + res);
     }
 }
 

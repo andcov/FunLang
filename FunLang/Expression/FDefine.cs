@@ -33,7 +33,7 @@ namespace FunLang
 			}
 			else if (list != null)
 			{
-				if(eval_vals.GetFType() == FType.FList && ((FList)eval_vals).Count == list.Count)
+				if (eval_vals.GetFType() == FType.FList && ((FList)eval_vals).Count == list.Count)
 				{
                     var list_vals = (FList)eval_vals;
                     for (int i = 0; i < list.Count; ++i)
