@@ -4,14 +4,14 @@ namespace FunLang
 
     public class FList : List<Expression>, Expression, ICloneable
     {
-        public Token tok { get; set; }
+        public Token? tok { get; set; } = null;
 
-        public FList(Token _tok)
+        public FList(Token? _tok)
         {
             tok = _tok;
         }
 
-        public FList(Expression exp, Token _tok)
+        public FList(Expression exp, Token? _tok)
         {
             this.Add(exp);
             tok = _tok;
@@ -19,7 +19,7 @@ namespace FunLang
 
         public Expression eval(Env env)
         {
-            var res = new FList(new Token());
+            var res = new FList(null);
             var unwrap = false;
             var functionator = false;
 
@@ -55,7 +55,7 @@ namespace FunLang
                 {
                     unwrap = true;
                     var func = (FCallable)ev;
-                    var args = new FList(new Token());
+                    var args = new FList(null);
                     (args, var next_i) = evalNFrom(env, i + 1, func.ParamCount(), false);
 
                     var func_env = new Env();
@@ -106,7 +106,7 @@ namespace FunLang
             if (first.GetFType() == FType.FCallable)
             {
                 var func = (FCallable)first;
-                var args = new FList(new Token());
+                var args = new FList(null);
                 (args, last_i) = evalNFrom(env, i + 1, func.ParamCount(), false);
 
                 var func_env = new Env();
@@ -125,7 +125,7 @@ namespace FunLang
 
             if (n == 1)
             {
-                return (new FList(first, new Token()), last_i);
+                return (new FList(first, null), last_i);
             }
 
             var (rest, new_i) = evalNFrom(env, last_i + 1, n - 1, false);

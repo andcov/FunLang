@@ -3,16 +3,10 @@ namespace FunLang
 {
     public class Token : ICloneable
     {
-        public string? token = null;
-        public int? position = null;
+        public string token;
+        public int position;
 
-        public Token()
-        {
-            token = null;
-            position = null;
-        }
-
-        public Token(string? _token, int? _position)
+        public Token(string _token, int _position)
         {
             token = _token;
             position = _position;
@@ -20,11 +14,7 @@ namespace FunLang
 
         public string Value()
         {
-            if (token != null)
-            {
-                return token;
-            }
-            return "";
+            return token;
         }
 
         public override string ToString()

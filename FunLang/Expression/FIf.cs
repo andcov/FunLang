@@ -7,9 +7,9 @@ namespace FunLang
 		public Expression condition;
 		public Expression then;
 		public Expression other;
-		public Token tok { get; set; }
+		public Token? tok { get; set; } = null;
 
-		public FIf(Expression _condition, Expression _then, Expression _other, Token _tok)
+		public FIf(Expression _condition, Expression _then, Expression _other, Token? _tok)
 		{
 			condition = _condition;
 			then = _then;
@@ -38,7 +38,7 @@ namespace FunLang
 			{
 				var num = (FNumber)cond;
 
-				if (!num.Equals(new FNumber(0)))
+				if (!num.Equals(new FNumber(0, null)))
 				{
 					res = then.eval(env);
 				}

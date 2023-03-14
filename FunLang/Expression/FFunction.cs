@@ -6,9 +6,9 @@ namespace FunLang
 	{
 		public List<FSymbol> parameters;
 		public Expression body;
-		public Token tok { get; set; }
+		public Token? tok { get; set; } = null;
 
-		public FFunction(List<FSymbol> _parameters, Expression _body, Token _tok)
+		public FFunction(List<FSymbol> _parameters, Expression _body, Token? _tok)
 		{
 			parameters = _parameters;
 			body = _body;

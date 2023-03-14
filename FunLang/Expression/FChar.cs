@@ -4,9 +4,9 @@ namespace FunLang
 	public class FChar : Expression
 	{
 		public char ch;
-        public Token tok { get; set; }
+		public Token? tok { get; set; } = null;
 
-		public FChar(char _ch, Token _tok)
+		public FChar(char _ch, Token? _tok)
 		{
 			ch = _ch;
 			tok = _tok;

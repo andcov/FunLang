@@ -3,12 +3,12 @@ namespace FunLang
 {
 	public class FDefine : Expression
 	{
-		public Token tok { get; set; }
+		public Token? tok { get; set; } = null;
 		public FSymbol? sym;
 		public FList? list;
 		public Expression vals;
 
-		public FDefine(FSymbol _sym, Expression _vals, Token _tok)
+		public FDefine(FSymbol _sym, Expression _vals, Token? _tok)
 		{
 			sym = _sym;
 			list = null;
@@ -16,7 +16,7 @@ namespace FunLang
 			tok = _tok;
 		}
 
-		public FDefine(FList _list, Expression _vals, Token _tok)
+		public FDefine(FList _list, Expression _vals, Token? _tok)
 		{
 			sym = null;
 			list = _list;
@@ -47,7 +47,7 @@ namespace FunLang
                 }
 			}
 
-			return new FNumber(-1000);
+			return new FNumber(-1000, null);
 		}
 
 		public override string ToString()

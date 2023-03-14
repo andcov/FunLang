@@ -6,7 +6,7 @@ internal class Program
 {
 	private static void Main(string[] args)
 	{
-		var program1 = new FunLang(
+		var program = new FunLang(
 """
 (
 define map lambda (f l) => (
@@ -33,14 +33,10 @@ println map $lambda x => (* 5 x) filter $lambda x => (== 0 % x 2) (1 2 3 4 5 6)
 )
 """);
 
-		var program = new FunLang("(- 3 (1 2 3))");
-
 		Console.WriteLine("Parse: " + program.parse());
 		Console.WriteLine("Output: ");
 		var res = program.evaluate();
 		Console.WriteLine("Result:\n" + res);
-
-        Console.WriteLine('a' * 'b');
     }
 }
 
@@ -346,11 +342,7 @@ public class FunLang {
 				next_pos += l.Length;
 				if(tok.position >= position && tok.position < next_pos)
 				{
-					if(tok.position == null)
-					{
-						throw new InvalidOperationException("Tried to use null token");
-					}
-					return (l + "\n" + (new string(' ', tok.position.Value - position)) + "^");
+					return (l + "\n" + (new string(' ', tok.position - position)) + "^");
 				}
 			}
 		}

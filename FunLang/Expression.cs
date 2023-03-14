@@ -6,7 +6,7 @@
 		public Expression eval(Env env);
 		public bool Equals(Expression exp);
 
-        Token tok { get; set; }
+        Token? tok { get; set; }
     }
 
 	public enum FType {

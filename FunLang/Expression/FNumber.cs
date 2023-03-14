@@ -5,30 +5,16 @@ namespace FunLang
 	{
 		public int? i;
 		public float? f;
-		public Token tok { get; set; }
+		public Token? tok { get; set; } = null;
 
-		public FNumber(int _i)
-		{
-			i = _i;
-			f = null;
-			tok = new Token();
-		}
-
-		public FNumber(float _f)
-		{
-			f = _f;
-			i = null;
-            tok = new Token();
-        }
-
-		public FNumber(int _i, Token _tok)
+		public FNumber(int _i, Token? _tok)
 		{
 			i = _i;
 			f = null;
 			tok = _tok;
 		}
 
-		public FNumber(float _f, Token _tok)
+		public FNumber(float _f, Token? _tok)
 		{
 			f = _f;
 			i = null;

@@ -8,7 +8,7 @@ namespace FunLang
 		public List<FSymbol> parameters = new List<FSymbol>();
 		public Env env = new Env();
 		public bool isClosure;
-		public Token tok { get; set; } = new Token();
+		public Token? tok { get; set; } = null;
 		
 
 		public abstract Expression eval(Env env);
@@ -40,12 +40,12 @@ namespace FunLang
 
 			if (arg1.GetFType() == FType.FChar)
 			{
-				var num = new FNumber(((FChar)arg1).ch);
+				var num = new FNumber(((FChar)arg1).ch, null);
 				arg1 = num;
 			}
             if (arg2.GetFType() == FType.FChar)
             {
-                var num = new FNumber(((FChar)arg2).ch);
+                var num = new FNumber(((FChar)arg2).ch, null);
                 arg2 = num;
             }
 
@@ -55,13 +55,13 @@ namespace FunLang
                 FNumber v2 = (FNumber)arg2;
                 if (v1.i.HasValue && v2.i.HasValue)
                 {
-                    return new FNumber(v1.i.Value + v2.i.Value);
+                    return new FNumber(v1.i.Value + v2.i.Value, null);
                 }
                 else
                 {
                     float f1 = (v1.i.HasValue) ? (float)v1.i : v1.f.Value;
                     float f2 = (v2.i.HasValue) ? (float)v2.i : v2.f.Value;
-                    return new FNumber(f1 + f2);
+                    return new FNumber(f1 + f2, null);
                 }
             }
 
@@ -93,12 +93,12 @@ namespace FunLang
 
             if (arg1.GetFType() == FType.FChar)
             {
-                var num = new FNumber(((FChar)arg1).ch);
+                var num = new FNumber(((FChar)arg1).ch, null);
                 arg1 = num;
             }
             if (arg2.GetFType() == FType.FChar)
             {
-                var num = new FNumber(((FChar)arg2).ch);
+                var num = new FNumber(((FChar)arg2).ch, null);
                 arg2 = num;
             }
 
@@ -108,13 +108,13 @@ namespace FunLang
                 FNumber v2 = (FNumber)arg2;
                 if (v1.i.HasValue && v2.i.HasValue)
                 {
-                    return new FNumber(v1.i.Value - v2.i.Value);
+                    return new FNumber(v1.i.Value - v2.i.Value, null);
                 }
                 else
                 {
                     float f1 = (v1.i.HasValue) ? (float)v1.i : v1.f.Value;
                     float f2 = (v2.i.HasValue) ? (float)v2.i : v2.f.Value;
-                    return new FNumber(f1 - f2);
+                    return new FNumber(f1 - f2, null);
                 }
             }
 
@@ -147,12 +147,12 @@ namespace FunLang
 
             if (arg1.GetFType() == FType.FChar)
             {
-                var num = new FNumber(((FChar)arg1).ch);
+                var num = new FNumber(((FChar)arg1).ch, null);
                 arg1 = num;
             }
             if (arg2.GetFType() == FType.FChar)
             {
-                var num = new FNumber(((FChar)arg2).ch);
+                var num = new FNumber(((FChar)arg2).ch, null);
                 arg2 = num;
             }
 
@@ -162,13 +162,13 @@ namespace FunLang
                 FNumber v2 = (FNumber)arg2;
                 if (v1.i.HasValue && v2.i.HasValue)
                 {
-                    return new FNumber(v1.i.Value * v2.i.Value);
+                    return new FNumber(v1.i.Value * v2.i.Value, null);
                 }
                 else
                 {
                     float f1 = (v1.i.HasValue) ? (float)v1.i : v1.f.Value;
                     float f2 = (v2.i.HasValue) ? (float)v2.i : v2.f.Value;
-                    return new FNumber(f1 * f2);
+                    return new FNumber(f1 * f2, null);
                 }
             }
 
@@ -201,12 +201,12 @@ namespace FunLang
 
             if (arg1.GetFType() == FType.FChar)
             {
-                var num = new FNumber(((FChar)arg1).ch);
+                var num = new FNumber(((FChar)arg1).ch, null);
                 arg1 = num;
             }
             if (arg2.GetFType() == FType.FChar)
             {
-                var num = new FNumber(((FChar)arg2).ch);
+                var num = new FNumber(((FChar)arg2).ch, null);
                 arg2 = num;
             }
 
@@ -217,7 +217,7 @@ namespace FunLang
                 
                 float f1 = (v1.i.HasValue) ? (float)v1.i : v1.f.Value;
                 float f2 = (v2.i.HasValue) ? (float)v2.i : v2.f.Value;
-                return new FNumber(f1 / f2);
+                return new FNumber(f1 / f2, null);
             }
 
             throw new InvalidOperationException($"Cannot divide {arg1.GetFType()} by {arg2.GetFType()}");
@@ -258,7 +258,7 @@ namespace FunLang
                 throw new InvalidOperationException("Can only take modulo out of integers");
             }
 
-            return new FNumber(num1.i.Value % num2.i.Value);
+            return new FNumber(num1.i.Value % num2.i.Value, null);
         }
 
         public override object Clone()
@@ -284,9 +284,9 @@ namespace FunLang
             var arg1 = env[parameters[0].name];
             var arg2 = env[parameters[1].name];
             if (arg1.Equals(arg2))
-                return new FNumber(1);
+                return new FNumber(1, null);
             else
-                return new FNumber(0);
+                return new FNumber(0, null);
         }
 
         public override object Clone()
@@ -312,9 +312,9 @@ namespace FunLang
             var arg1 = env[parameters[0].name];
             var arg2 = env[parameters[1].name];
             if (!arg1.Equals(arg2))
-                return new FNumber(1);
+                return new FNumber(1, null);
             else
-                return new FNumber(0);
+                return new FNumber(0, null);
         }
 
         public override object Clone()
@@ -338,7 +338,7 @@ namespace FunLang
 		{
 			var arg1 = env[parameters[0].name];
 			if (arg1.GetFType() == FType.FList)
-				return new FNumber(((FList)arg1).Count());
+				return new FNumber(((FList)arg1).Count(), null);
 			else
 				throw new InvalidOperationException("Can only measure length of list");
 		}
@@ -492,7 +492,7 @@ namespace FunLang
 			var arg1 = env[parameters[0].name];
 			Console.WriteLine(arg1);
 
-            return new FNumber(-1000);
+            return new FNumber(-1000, null);
         }
 
 		public override object Clone()

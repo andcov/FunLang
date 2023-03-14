@@ -4,15 +4,15 @@ namespace FunLang
     public class FSymbol : Expression
     {
         public string name;
-        public Token tok { get; set; }
+        public Token? tok { get; set; } = null;
 
         public FSymbol(string _name)
         {
             name = _name;
-            tok = new Token();
+            tok = null;
         }
 
-        public FSymbol(string _name, Token _tok)
+        public FSymbol(string _name, Token? _tok)
         {
             name = _name;
             tok = _tok;

@@ -5,9 +5,9 @@ namespace FunLang
 {
 	public class FFunctionator : Expression
 	{
-        public Token tok { get; set; }
+        public Token? tok { get; set; } = null;
 
-        public FFunctionator(Token _tok)
+        public FFunctionator(Token? _tok)
         {
             tok = _tok;
         }
