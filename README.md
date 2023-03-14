@@ -98,20 +98,15 @@ This will output `(7 9 7 9 11 13 29)`
 
 ### Operations
 
- - [ ] `+ a b`
-	- if `a` and `b` are numbers, it returns their sum
-	- if `a` is a char and `b` a number, it returns the sum between `b` and the ASCII code of `a` and converts it to a char (if the resulting number if not a valid ASCII code, it returns the number)
- - [ ] `- a b`
-	- if `a` and `b` are numbers, it returns their difference
-	- if `a` is a char and `b` a number, it returns the difference between the ASCII code of `a` and `b` and converts it to a char (if the resulting number if not a valid ASCII code, it returns the number)
- - [ ] `/ a b`
+ - [x] `+ a b`
+ - [x] `- a b`
+ - [x] `* a b`
+ - [x] `/ a b`
 	- divides `a` by `b` and returns a float (regardless if `a` and `b` are integers)
- - [ ] `* a b`
-	- `a` and `b` must be numbers
- - [ ] `% a b`
-	- computes `a` modulo `b`; `a` and `b` must be integers
+ - [x] `% a b`
+	- `a` and `b` must be integers
 
-For all operations (apart from modulo), if one of the numbers is a float and the other is an integer, the integer gets promoted to a float.
+For all operations (apart from modulo), if one of the numbers is a float and the other is an integer, the integer gets promoted to a float. If one of them is a char, it gets converted to its ASCII code.
 
 ### Standard functions
  - [ ] `not e`      : takes the logical value of the expression and negates it

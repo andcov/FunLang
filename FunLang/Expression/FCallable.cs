@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Xml.Linq;
+
 namespace FunLang
 {
 	public abstract class FCallable : Expression
@@ -35,33 +37,36 @@ namespace FunLang
 		{
 			var arg1 = env[parameters[0].name];
 			var arg2 = env[parameters[1].name];
-			if (arg1.GetFType() == arg2.GetFType())
+
+			if (arg1.GetFType() == FType.FChar)
 			{
-				if (arg1.GetFType() == FType.FNumber)
-				{
-					FNumber v1 = (FNumber)arg1;
-					FNumber v2 = (FNumber)arg2;
-					if (v1.i.HasValue && v2.i.HasValue)
-					{
-						return new FNumber(v1.i.Value + v2.i.Value);
-					}
-					else
-					{
-						float f1 = (v1.i.HasValue) ? (float)v1.i : v1.f.Value;
-						float f2 = (v2.i.HasValue) ? (float)v2.i : v2.f.Value;
-						return new FNumber(f1 + f2);
-					}
-				}
-				else
-				{
-					throw new NotImplementedException();
-				}
+				var num = new FNumber(((FChar)arg1).ch);
+				arg1 = num;
 			}
-			else
-			{
-				throw new InvalidOperationException($"Expected the same type, got {arg1.GetFType()} and {arg2.GetFType()}");
-			}
-		}
+            if (arg2.GetFType() == FType.FChar)
+            {
+                var num = new FNumber(((FChar)arg2).ch);
+                arg2 = num;
+            }
+
+            if (arg1.GetFType() == FType.FNumber && arg2.GetFType() == FType.FNumber)
+            {
+                FNumber v1 = (FNumber)arg1;
+                FNumber v2 = (FNumber)arg2;
+                if (v1.i.HasValue && v2.i.HasValue)
+                {
+                    return new FNumber(v1.i.Value + v2.i.Value);
+                }
+                else
+                {
+                    float f1 = (v1.i.HasValue) ? (float)v1.i : v1.f.Value;
+                    float f2 = (v2.i.HasValue) ? (float)v2.i : v2.f.Value;
+                    return new FNumber(f1 + f2);
+                }
+            }
+
+            throw new InvalidOperationException($"Cannot add {arg1.GetFType()} and {arg2.GetFType()}");
+        }
 
 		public override object Clone()
 		{
@@ -83,37 +88,41 @@ namespace FunLang
 
 		public override Expression eval(Env env)
 		{
-			var arg1 = env[parameters[0].name];
-			var arg2 = env[parameters[1].name];
-			if (arg1.GetFType() == arg2.GetFType())
-			{
-				if (arg1.GetFType() == FType.FNumber)
-				{
-					FNumber v1 = (FNumber)arg1;
-					FNumber v2 = (FNumber)arg2;
-					if (v1.i.HasValue && v2.i.HasValue)
-					{
-						return new FNumber(v1.i.Value - v2.i.Value);
-					}
-					else
-					{
-						float f1 = (v1.i.HasValue) ? (float)v1.i : v1.f.Value;
-						float f2 = (v2.i.HasValue) ? (float)v2.i : v2.f.Value;
-						return new FNumber(f1 - f2);
-					}
-				}
-				else
-				{
-					throw new NotImplementedException();
-				}
-			}
-			else
-			{
-				throw new InvalidOperationException($"Expected the same type, got {arg1.GetFType()} and {arg2.GetFType()}");
-			}
-		}
+            var arg1 = env[parameters[0].name];
+            var arg2 = env[parameters[1].name];
 
-		public override object Clone()
+            if (arg1.GetFType() == FType.FChar)
+            {
+                var num = new FNumber(((FChar)arg1).ch);
+                arg1 = num;
+            }
+            if (arg2.GetFType() == FType.FChar)
+            {
+                var num = new FNumber(((FChar)arg2).ch);
+                arg2 = num;
+            }
+
+            if (arg1.GetFType() == FType.FNumber && arg2.GetFType() == FType.FNumber)
+            {
+                FNumber v1 = (FNumber)arg1;
+                FNumber v2 = (FNumber)arg2;
+                if (v1.i.HasValue && v2.i.HasValue)
+                {
+                    return new FNumber(v1.i.Value - v2.i.Value);
+                }
+                else
+                {
+                    float f1 = (v1.i.HasValue) ? (float)v1.i : v1.f.Value;
+                    float f2 = (v2.i.HasValue) ? (float)v2.i : v2.f.Value;
+                    return new FNumber(f1 - f2);
+                }
+            }
+
+            throw new InvalidOperationException($"Cannot subtract {arg1.GetFType()} from {arg2.GetFType()}");
+
+        }
+
+        public override object Clone()
 		{
 			return new Substract();
 		}
@@ -133,69 +142,158 @@ namespace FunLang
 
 		public override Expression eval(Env env)
 		{
-			var arg1 = env[parameters[0].name];
-			var arg2 = env[parameters[1].name];
-			if (arg1.GetFType() == arg2.GetFType())
-			{
-				if (arg1.GetFType() == FType.FNumber)
-				{
-					FNumber v1 = (FNumber)arg1;
-					FNumber v2 = (FNumber)arg2;
-					if (v1.i.HasValue && v2.i.HasValue)
-					{
-						return new FNumber(v1.i.Value * v2.i.Value);
-					}
-					else
-					{
-						float f1 = (v1.i.HasValue) ? (float)v1.i : v1.f.Value;
-						float f2 = (v2.i.HasValue) ? (float)v2.i : v2.f.Value;
-						return new FNumber(f1 * f2);
-					}
-				}
-				else
-				{
-					throw new NotImplementedException();
-				}
-			}
-			else
-			{
-				throw new InvalidOperationException($"Expected the same type, got {arg1.GetFType()} and {arg2.GetFType()}");
-			}
-		}
+            var arg1 = env[parameters[0].name];
+            var arg2 = env[parameters[1].name];
 
-		public override object Clone()
+            if (arg1.GetFType() == FType.FChar)
+            {
+                var num = new FNumber(((FChar)arg1).ch);
+                arg1 = num;
+            }
+            if (arg2.GetFType() == FType.FChar)
+            {
+                var num = new FNumber(((FChar)arg2).ch);
+                arg2 = num;
+            }
+
+            if (arg1.GetFType() == FType.FNumber && arg2.GetFType() == FType.FNumber)
+            {
+                FNumber v1 = (FNumber)arg1;
+                FNumber v2 = (FNumber)arg2;
+                if (v1.i.HasValue && v2.i.HasValue)
+                {
+                    return new FNumber(v1.i.Value * v2.i.Value);
+                }
+                else
+                {
+                    float f1 = (v1.i.HasValue) ? (float)v1.i : v1.f.Value;
+                    float f2 = (v2.i.HasValue) ? (float)v2.i : v2.f.Value;
+                    return new FNumber(f1 * f2);
+                }
+            }
+
+            throw new InvalidOperationException($"Cannot multiply {arg1.GetFType()} and {arg2.GetFType()}");
+
+        }
+
+        public override object Clone()
 		{
 			return new Multiply();
 		}
 	}
 
-	public class Equal : FCallable
-	{
-		public Equal()
-		{
-			var x = new FSymbol("__x__");
-			var y = new FSymbol("__y__");
-			isClosure = false;
+    public class Divide : FCallable
+    {
+        public Divide()
+        {
+            var x = new FSymbol("__x__");
+            var y = new FSymbol("__y__");
+            isClosure = false;
 
-			parameters.Add(x);
-			parameters.Add(y);
-		}
+            parameters.Add(x);
+            parameters.Add(y);
+        }
 
-		public override Expression eval(Env env)
-		{
-			var arg1 = env[parameters[0].name];
-			var arg2 = env[parameters[1].name];
-			if (arg1.Equals(arg2))
-				return new FNumber(1);
-			else
-				return new FNumber(0);
-		}
+        public override Expression eval(Env env)
+        {
+            var arg1 = env[parameters[0].name];
+            var arg2 = env[parameters[1].name];
 
-		public override object Clone()
-		{
-			return new Equal();
-		}
-	}
+            if (arg1.GetFType() == FType.FChar)
+            {
+                var num = new FNumber(((FChar)arg1).ch);
+                arg1 = num;
+            }
+            if (arg2.GetFType() == FType.FChar)
+            {
+                var num = new FNumber(((FChar)arg2).ch);
+                arg2 = num;
+            }
+
+            if (arg1.GetFType() == FType.FNumber && arg2.GetFType() == FType.FNumber)
+            {
+                FNumber v1 = (FNumber)arg1;
+                FNumber v2 = (FNumber)arg2;
+                
+                float f1 = (v1.i.HasValue) ? (float)v1.i : v1.f.Value;
+                float f2 = (v2.i.HasValue) ? (float)v2.i : v2.f.Value;
+                return new FNumber(f1 / f2);
+            }
+
+            throw new InvalidOperationException($"Cannot divide {arg1.GetFType()} by {arg2.GetFType()}");
+
+        }
+
+        public override object Clone()
+        {
+            return new Divide();
+        }
+    }
+
+    public class Mod : FCallable
+    {
+        public Mod()
+        {
+            var x = new FSymbol("__x__");
+            var y = new FSymbol("__y__");
+            isClosure = false;
+
+            parameters.Add(x);
+            parameters.Add(y);
+        }
+
+        public override Expression eval(Env env)
+        {
+            var arg1 = env[parameters[0].name];
+            var arg2 = env[parameters[1].name];
+			if(arg1.GetFType() != FType.FNumber || arg2.GetFType() != FType.FNumber)
+			{
+                throw new InvalidOperationException("Can only take modulo out of integers");
+            }
+			var num1 = (FNumber)arg1;
+            var num2 = (FNumber)arg2;
+
+            if (num1.i == null || num2.i == null)
+            {
+                throw new InvalidOperationException("Can only take modulo out of integers");
+            }
+
+            return new FNumber(num1.i.Value % num2.i.Value);
+        }
+
+        public override object Clone()
+        {
+            return new Mod();
+        }
+    }
+
+    public class Equal : FCallable
+    {
+        public Equal()
+        {
+            var x = new FSymbol("__x__");
+            var y = new FSymbol("__y__");
+            isClosure = false;
+
+            parameters.Add(x);
+            parameters.Add(y);
+        }
+
+        public override Expression eval(Env env)
+        {
+            var arg1 = env[parameters[0].name];
+            var arg2 = env[parameters[1].name];
+            if (arg1.Equals(arg2))
+                return new FNumber(1);
+            else
+                return new FNumber(0);
+        }
+
+        public override object Clone()
+        {
+            return new Equal();
+        }
+    }
 
     public class Different : FCallable
     {
@@ -225,42 +323,6 @@ namespace FunLang
         }
     }
 
-    public class Mod : FCallable
-    {
-        public Mod()
-        {
-            var x = new FSymbol("__x__");
-            var y = new FSymbol("__y__");
-            isClosure = false;
-
-            parameters.Add(x);
-            parameters.Add(y);
-        }
-
-        public override Expression eval(Env env)
-        {
-            var arg1 = env[parameters[0].name];
-            var arg2 = env[parameters[1].name];
-			if(arg1.GetFType() != FType.FNumber || arg2.GetFType() != FType.FNumber)
-			{
-                throw new InvalidOperationException("Can only take modulos out of integers");
-            }
-			var num1 = (FNumber)arg1;
-            var num2 = (FNumber)arg2;
-
-            if (num1.i == null || num2.i == null)
-            {
-                throw new InvalidOperationException("Can only take modulos out of integers");
-            }
-
-            return new FNumber(num1.i.Value % num2.i.Value);
-        }
-
-        public override object Clone()
-        {
-            return new Mod();
-        }
-    }
 
     public class Length : FCallable
 	{

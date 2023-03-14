@@ -6,7 +6,7 @@ internal class Program
 {
 	private static void Main(string[] args)
 	{
-		var program = new FunLang(
+		var program1 = new FunLang(
 """
 (
 define map lambda (f l) => (
@@ -33,12 +33,14 @@ println map $lambda x => (* 5 x) filter $lambda x => (== 0 % x 2) (1 2 3 4 5 6)
 )
 """);
 
+		var program = new FunLang("(- 3 (1 2 3))");
+
 		Console.WriteLine("Parse: " + program.parse());
 		Console.WriteLine("Output: ");
 		var res = program.evaluate();
 		Console.WriteLine("Result:\n" + res);
-		float f = -0.0f;
-		Console.WriteLine(1.0f / f);
+
+        Console.WriteLine('a' * 'b');
     }
 }
 

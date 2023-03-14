@@ -7,7 +7,7 @@ namespace FunLang
 			this["+"] = new Add();
             this["-"] = new Substract();
             this["*"] = new Multiply();
-
+            this["/"] = new Divide();
             this["%"] = new Mod();
 
             this["=="] = new Equal();
