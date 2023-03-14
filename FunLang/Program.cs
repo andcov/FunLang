@@ -9,8 +9,7 @@ internal class Program
 		var program = new FunLang(
 """
 (
-
-/*define map lambda (f l) => (
+define map lambda (f l) => (
 	if l then (
 		(push f first l map $f rest l)
 	) else (
@@ -30,10 +29,7 @@ define filter lambda (f l) => (
 	)
 )
 
-println map $lambda x => (+ 5 x) filter $lambda x => (== 0 % x 2) (1 2 5 3 4 5 1 2 3 4 5 6 7 8 5 5 24)*/
-
-println "hello world!"
-
+println map $lambda x => (+ 5 x) filter $lambda x => (== 0 % x 2) (1 2 5 3 4 5 1 2 3 4 5 6 7 8 5 5 24)
 )
 """);
 
@@ -260,7 +256,7 @@ public class FunLang {
 		}
 		else if (token.Value() == "$")
 		{
-			return new FDollar(token);
+			return new FFunctionator(token);
 		}
 		else // a number, a char, a string or a symbol
 		{

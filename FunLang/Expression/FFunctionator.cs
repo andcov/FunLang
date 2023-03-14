@@ -3,11 +3,11 @@ using System.Xml.Linq;
 
 namespace FunLang
 {
-	public class FDollar : Expression
+	public class FFunctionator : Expression
 	{
         public Token tok { get; set; }
 
-        public FDollar(Token _tok)
+        public FFunctionator(Token _tok)
         {
             tok = _tok;
         }
@@ -28,7 +28,7 @@ namespace FunLang
 
         public object Clone()
         {
-            return new FDollar(tok);
+            return new FFunctionator(tok);
         }
         public FType GetFType()
         {
