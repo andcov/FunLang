@@ -1,4 +1,6 @@
-﻿namespace FunLang;
+﻿using System.Collections.Generic;
+
+namespace FunLang;
 
 internal class Program
 {
@@ -27,14 +29,16 @@ define filter lambda (f l) => (
 	)
 )
 
-println map $lambda x => (+ 5 x) filter $lambda x => (== 0 % x 2) (1 2 5 3 4 5 1 2 3 4 5 6 7 8 5 5 24)
+println map $lambda x => (* 5 x) filter $lambda x => (== 0 % x 2) (1 2 3 4 5 6)
 )
 """);
 
-        Console.WriteLine("Parse: " + program.parse());
-        Console.WriteLine("Output: ");
-        var res = program.evaluate();
-        Console.WriteLine("Result:\n" + res);
+		Console.WriteLine("Parse: " + program.parse());
+		Console.WriteLine("Output: ");
+		var res = program.evaluate();
+		Console.WriteLine("Result:\n" + res);
+		float f = -0.0f;
+		Console.WriteLine(1.0f / f);
     }
 }
 
@@ -116,11 +120,45 @@ public class FunLang {
 				position += l.Length;
 			}
 		}
-
-		return t_list;
+		//t_list.ForEach(tok => Console.WriteLine(tok));
+        return remove_comments(t_list);
 	}
 
-	public Expression parse() {
+	private List<Token> remove_comments(List<Token> toks) {
+		int cnt = 0;
+		List<Token> res = new List<Token>();
+
+        for (int i = 0; i < toks.Count; ++i)
+		{
+			if (toks[i].token == "/*")
+			{
+				cnt++;
+			}
+
+			if (cnt == 0)
+			{
+				res.Add((Token)toks[i].Clone());
+			}
+
+            if (toks[i].token == "*/")
+            {
+                cnt--;
+                if (cnt < 0)
+                {
+                    throw new InvalidOperationException("Unexpected end of comment");
+                }
+            }
+        }
+
+		if (cnt > 0)
+		{
+            throw new InvalidOperationException("Comment block not closed");
+        }
+
+		return res;
+	}
+
+    public Expression parse() {
 		return read_from_tokens(tokenise());
 	}
 
@@ -154,21 +192,6 @@ public class FunLang {
 		{
 			throw new InvalidOperationException("Unexpected ')'");
 		}
-		else if (token.Value() == "/*")
-        {
-            while (tokens[0].Value() != "*/")
-            {
-				read_from_tokens(tokens);
-            }
-
-            tokens.RemoveAt(0); // remove '*/'
-
-            return null;
-        }
-        else if (token.Value() == "*/")
-        {
-            throw new InvalidOperationException("Unexpected '*/'");
-        }
         else if (token.Value() == "lambda")
 		{
 			var parameters = new List<FSymbol>();
