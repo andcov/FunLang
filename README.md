@@ -96,7 +96,7 @@ This will output `(7 9 7 9 11 13 29)`
 
 ## List of functions
 
-### Operations
+### Basic Operations
 
  - [x] `+ a b`
  - [x] `- a b`
@@ -106,23 +106,38 @@ This will output `(7 9 7 9 11 13 29)`
  - [x] `% a b`
 	- `a` and `b` must be integers
 
+ - [x] `== a b`
+ - [x] `!= a b`
+ - [ ] `not a`
+	- negates the logical value of `a`
+ - [ ] `or a b`
+	- logical or
+ - [ ] `and a b`
+	- logical and
+
 For all operations (apart from modulo), if one of the numbers is a float and the other is an integer, the integer gets promoted to a float. If one of them is a char, it gets converted to its ASCII code.
 
 ### Standard functions
- - [ ] `not e`      : takes the logical value of the expression and negates it
- - [ ] `push e l`   : inserts e to the front of l and return the new list
+ - [x] `push e l`   : inserts e to the front of l and return the new list
  - [ ] `pop l`      : removes the first element of l and returns it, error if l is empty
- - [ ] `println s`  : prints s to stdout, followed by a new line
+ - [x] `println s`  : prints s to stdout, followed by a new line
  - [ ] `error e`    : prints e to stderr and halts the program
  - [ ] `? input s`  : reads string from stdin into s
- - [ ] `first l`    : returns the first element of l, error if l is empty
- - [ ] `second l`   : returns the second element of l, error if l has one element
+ - [x] `first l`    : returns the first element of l, error if l is empty
+ - [x] `second l`   : returns the second element of l, error if l has one element
  - [ ] `third l`    : returns the third element of l, error if l has two elements
- - [ ] `rest l`     : returns everything after the first element of l, error if l is empty
- - [ ] `length l`   : returns the length of l
+ - [x] `rest l`     : returns everything after the first element of l, error if l is empty
+ - [x] `length l`   : returns the length of l
  - [ ] `empty l`    : checks if l is empty
  - [ ] `sum l`      : sums over l
  - [ ] `product l`  : multiplies over l
  - [ ] `map l f`    : runs f for every element of l and returns the resulting list
  - [ ] `filter l f` : runs f for every element of l and returns a list containing the elements for each f is true
+
+# TODO
+ - [ ] reformat code
+ - [ ] make error reporting work with tabs
+ - [ ] fix line counting when reporting errors
+ - [ ] add support for special chars ('\n')
+ - [ ] implement logical value for Expression
 
