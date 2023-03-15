@@ -2,36 +2,36 @@ using System;
 namespace FunLang
 {
 
-	public class FIf : Expression
+	public class FIf : IExpression
 	{
-		public Expression condition;
-		public Expression then;
-		public Expression other;
-		public Token? tok { get; set; } = null;
+		public IExpression condition;
+		public IExpression then;
+		public IExpression other;
+		public Token? Tok { get; set; } = null;
 
-		public FIf(Expression _condition, Expression _then, Expression _other, Token? _tok)
+		public FIf(IExpression _condition, IExpression _then, IExpression _other, Token? _tok)
 		{
 			condition = _condition;
 			then = _then;
 			other = _other;
-			tok = _tok;
+			Tok = _tok;
 		}
 
-		public Expression eval(Env env)
+		public IExpression Eval(Env env)
 		{
-			var cond = condition.eval(env);
+			var cond = condition.Eval(env);
 
-            Expression? res = null;
+            IExpression? res = null;
 
             if (cond.GetFType() == FType.FList)
 			{
-				if (((FList)cond).Count() != 0)
+				if (((FList)cond).Count != 0)
 				{
-					res = then.eval(env);
+					res = then.Eval(env);
 				}
 				else
 				{
-					res = other.eval(env);
+					res = other.Eval(env);
 				}
 			}
 			else if (cond.GetFType() == FType.FNumber)
@@ -40,19 +40,19 @@ namespace FunLang
 
 				if (!num.Equals(new FNumber(0, null)))
 				{
-					res = then.eval(env);
+					res = then.Eval(env);
 				}
 				else
 				{
-					res = other.eval(env);
+					res = other.Eval(env);
 				}
 			}
 
 			if (res == null)
 			{
-                throw new InvalidFunProgram("Cannot evaluate truth value of " + cond, cond.tok);
+                throw new InvalidFunProgram("Cannot evaluate truth value of " + cond, cond.Tok);
             } else if (res.GetFType() == FType.FList && ((FList)res).Count >= 1)
-                return ((FList)res)[((FList)res).Count - 1]; // return last element
+                return ((FList)res)[^1]; // return last element
             else
                 return res;
 		}
@@ -61,14 +61,14 @@ namespace FunLang
 		{
 			return $"If [{condition}] then [{then}] else [{other}]";
 		}
-		public bool Equals(Expression exp)
+		public bool Equals(IExpression exp)
 		{
 			return false;
 		}
 
 		public object Clone()
 		{
-			return new FIf((Expression)condition.Clone(), (Expression)then.Clone(), (Expression)other.Clone(), (Token)tok.Clone());
+			return new FIf((IExpression)condition.Clone(), (IExpression)then.Clone(), (IExpression)other.Clone(), (Token)Tok.Clone());
 		}
 		public FType GetFType() { return FType.FIf; }
 	}

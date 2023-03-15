@@ -3,16 +3,16 @@ using System.Xml.Linq;
 
 namespace FunLang
 {
-	public class FFunctionator : Expression
+	public class FFunctionator : IExpression
 	{
-        public Token? tok { get; set; } = null;
+        public Token? Tok { get; set; } = null;
 
         public FFunctionator(Token? _tok)
         {
-            tok = _tok;
+            Tok = _tok;
         }
 
-        public Expression eval(Env env)
+        public IExpression Eval(Env env)
         {
             return this;
         }
@@ -21,14 +21,14 @@ namespace FunLang
         {
             return "$";
         }
-        public bool Equals(Expression exp)
+        public bool Equals(IExpression exp)
         {
             return false;
         }
 
         public object Clone()
         {
-            return new FFunctionator(tok);
+            return new FFunctionator(Tok);
         }
         public FType GetFType()
         {

@@ -2,22 +2,22 @@ using System;
 namespace FunLang
 {
 
-    public class FList : List<Expression>, Expression, ICloneable
+    public class FList : List<IExpression>, IExpression, ICloneable
     {
-        public Token? tok { get; set; } = null;
+        public Token? Tok { get; set; } = null;
 
         public FList(Token? _tok)
         {
-            tok = _tok;
+            Tok = _tok;
         }
 
-        public FList(Expression exp, Token? _tok)
+        public FList(IExpression exp, Token? _tok)
         {
             this.Add(exp);
-            tok = _tok;
+            Tok = _tok;
         }
 
-        public Expression eval(Env env)
+        public IExpression Eval(Env env)
         {
             var res = new FList(null);
             var unwrap = false;
@@ -25,7 +25,7 @@ namespace FunLang
 
             for (int i = 0; i < this.Count; ++i)
             {
-                var ev = this[i].eval(env);
+                var ev = this[i].Eval(env);
 
                 if (ev.GetFType() == FType.FFunctionator)
                 {
@@ -48,14 +48,14 @@ namespace FunLang
 
                 if (functionator == true)
                 {
-                    throw new InvalidFunProgram("Functionator can only be applied to a function", tok);
+                    throw new InvalidFunProgram("Functionator can only be applied to a function", Tok);
                 }
 
                 if (ev.GetFType() == FType.FCallable)
                 {
                     unwrap = true;
                     var func = (FCallable)ev;
-                    (FList args, var next_i) = evalNFrom(env, i + 1, func.ParamCount(), false);
+                    (FList args, var next_i) = EvalNFrom(env, i + 1, func.ParamCount(), false);
 
                     var func_env = new Env();
                     if (func.isClosure)
@@ -65,7 +65,7 @@ namespace FunLang
 
                     func_env.AddArguments(func.parameters, args);
 
-                    ev = func.eval(func_env);
+                    ev = func.Eval(func_env);
                     i = next_i;
                 }
                     
@@ -79,17 +79,17 @@ namespace FunLang
             return res;
         }
 
-        public (FList, int) evalNFrom(Env env, int i, int n, bool functionator)
+        public (FList, int) EvalNFrom(Env env, int i, int n, bool functionator)
         {
             if (this.Count - i < n)
             {
-                throw new InvalidFunProgram($"Not enough symbols to evaluate {n}, {i}, {this.Count}: {this}", tok);
+                throw new InvalidFunProgram($"Not enough symbols to evaluate {n}, {i}, {this.Count}: {this}", Tok);
             }
 
-            Expression first;
+            IExpression first;
             var last_i = i;
 
-            first = this[i].eval(env);
+            first = this[i].Eval(env);
 
             if (first.GetFType() == FType.FFunction && functionator == false)
             {
@@ -99,14 +99,13 @@ namespace FunLang
 
             if (first.GetFType() != FType.FFunction && functionator == true)
             {
-                throw new InvalidFunProgram("Functionator can only be applied to a function", first.tok);
+                throw new InvalidFunProgram("Functionator can only be applied to a function", first.Tok);
             }
 
             if (first.GetFType() == FType.FCallable)
             {
                 var func = (FCallable)first;
-                var args = new FList(null);
-                (args, last_i) = evalNFrom(env, i + 1, func.ParamCount(), false);
+                (FList args, last_i) = EvalNFrom(env, i + 1, func.ParamCount(), false);
 
                 var func_env = new Env();
                 if (func.isClosure)
@@ -116,10 +115,10 @@ namespace FunLang
 
                 func_env.AddArguments(func.parameters, args);
 
-                first = func.eval(func_env);
+                first = func.Eval(func_env);
             } else if (first.GetFType() == FType.FFunctionator)
             {
-                return evalNFrom(env, last_i + 1, n, true);
+                return EvalNFrom(env, last_i + 1, n, true);
             }
 
             if (n == 1)
@@ -127,13 +126,13 @@ namespace FunLang
                 return (new FList(first, null), last_i);
             }
 
-            var (rest, new_i) = evalNFrom(env, last_i + 1, n - 1, false);
+            var (rest, new_i) = EvalNFrom(env, last_i + 1, n - 1, false);
             rest.Insert(0, first);
 
             return (rest, new_i);
         }
 
-        public bool isListOf(FType type)
+        public bool IsListOf(FType type)
         {
             foreach (var e in this)
             {
@@ -146,7 +145,7 @@ namespace FunLang
         public override string ToString()
         {
             var res = "";
-            if (this.Count > 0 && this.isListOf(FType.FChar))
+            if (this.Count > 0 && this.IsListOf(FType.FChar))
             {
                 foreach (var ch in this)
                 {
@@ -167,7 +166,7 @@ namespace FunLang
                 return $"[{res}]";
             }
         }
-        public bool Equals(Expression exp)
+        public bool Equals(IExpression exp)
         {
             if (exp.GetFType() != FType.FList) return false;
             var other = (FList)exp;
@@ -181,10 +180,10 @@ namespace FunLang
 
         public object Clone()
         {
-            var res = new FList(tok);
+            var res = new FList(Tok);
             foreach (var el in this)
             {
-                res.Add((Expression)(el.Clone()));
+                res.Add((IExpression)(el.Clone()));
             }
 
             return res;

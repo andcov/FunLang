@@ -1,38 +1,38 @@
 using System;
 namespace FunLang
 {
-    public class FSymbol : Expression
+    public class FSymbol : IExpression
     {
         public string name;
-        public Token? tok { get; set; } = null;
+        public Token? Tok { get; set; } = null;
 
         public FSymbol(string _name)
         {
             name = _name;
-            tok = null;
+            Tok = null;
         }
 
         public FSymbol(string _name, Token? _tok)
         {
             name = _name;
-            tok = _tok;
+            Tok = _tok;
         }
 
-        public Expression eval(Env env)
+        public IExpression Eval(Env env)
         {
-            if (env.TryGetValue(name, out Expression? e))
+            if (env.TryGetValue(name, out IExpression? e))
             {
-                e.tok = tok;
+                e.Tok = Tok;
                 return e;
             }
-            throw new InvalidFunProgram("Cannot find the symbol " + name, tok);
+            throw new InvalidFunProgram("Cannot find the symbol " + name, Tok);
         }
 
         public override string ToString()
         {
             return $"Sym {name}";
         }
-        public bool Equals(Expression exp)
+        public bool Equals(IExpression exp)
         {
             if (exp.GetFType() != FType.FSymbol) return false;
             return this.name == ((FSymbol)exp).name;
@@ -40,7 +40,7 @@ namespace FunLang
 
         public object Clone()
         {
-            return new FSymbol(name, tok);
+            return new FSymbol(name, Tok);
         }
         public FType GetFType()
         {

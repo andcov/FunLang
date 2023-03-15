@@ -1,32 +1,32 @@
 using System;
 namespace FunLang
 {
-	public class FDefine : Expression
+	public class FDefine : IExpression
 	{
-		public Token? tok { get; set; } = null;
+		public Token? Tok { get; set; } = null;
 		public FSymbol? sym;
 		public FList? list;
-		public Expression vals;
+		public IExpression vals;
 
-		public FDefine(FSymbol _sym, Expression _vals, Token? _tok)
+		public FDefine(FSymbol _sym, IExpression _vals, Token? _tok)
 		{
 			sym = _sym;
 			list = null;
 			vals = _vals;
-			tok = _tok;
+			Tok = _tok;
 		}
 
-		public FDefine(FList _list, Expression _vals, Token? _tok)
+		public FDefine(FList _list, IExpression _vals, Token? _tok)
 		{
 			sym = null;
 			list = _list;
 			vals = _vals;
-			tok = _tok;
+			Tok = _tok;
 		}
 
-		public Expression eval(Env env)
+		public IExpression Eval(Env env)
 		{
-            var eval_vals = vals.eval(env);
+            var eval_vals = vals.Eval(env);
             if (sym != null)
 			{
                 env[sym.name] = eval_vals;
@@ -43,7 +43,7 @@ namespace FunLang
                     }
                 } else
 				{
-                    throw new InvalidFunProgram("Could not create list out of right side of definition", vals.tok);
+                    throw new InvalidFunProgram("Could not create list out of right side of definition", vals.Tok);
                 }
 			}
 
@@ -63,7 +63,7 @@ namespace FunLang
 			}
 			return res;
 		}
-		public bool Equals(Expression exp)
+		public bool Equals(IExpression exp)
 		{
 			return false;
 		}
@@ -72,11 +72,11 @@ namespace FunLang
 		{
 			if (sym != null)
 			{
-				return new FDefine((FSymbol)sym.Clone(), (Expression)vals.Clone(), (Token)tok.Clone());
+				return new FDefine((FSymbol)sym.Clone(), (IExpression)vals.Clone(), (Token)Tok.Clone());
 			}
 			else
 			{
-				return new FDefine((FList)list.Clone(), (Expression)vals.Clone(), (Token)tok.Clone());
+				return new FDefine((FList)list.Clone(), (IExpression)vals.Clone(), (Token)Tok.Clone());
 			}
 		}
 		public FType GetFType() { return FType.FDefine; }

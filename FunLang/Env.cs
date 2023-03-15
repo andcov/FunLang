@@ -1,7 +1,7 @@
 ﻿using System;
 namespace FunLang
 {
-	public class Env : Dictionary<string, Expression>, ICloneable
+	public class Env : Dictionary<string, IExpression>, ICloneable
     {
 		public void AddStandard() {
 			this["+"] = new Add();
@@ -24,7 +24,7 @@ namespace FunLang
 
 		public void AddArguments(List<FSymbol> parameters, FList arguments)
 		{
-			for(int i = 0; i < parameters.Count(); ++i)
+			for(int i = 0; i < parameters.Count; ++i)
 			{
                 this[parameters[i].name] = arguments[i];
             }
@@ -32,10 +32,10 @@ namespace FunLang
 
         public object Clone()
         {
-            Env clone = new Env();
+            Env clone = new();
             foreach (var (k, v) in this)
             {
-                clone[k] = (Expression) (v.Clone());
+                clone[k] = (IExpression) (v.Clone());
             }
             return clone;
         }

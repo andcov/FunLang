@@ -1,27 +1,27 @@
 using System;
 namespace FunLang
 {
-	public class FNumber : Expression
+	public class FNumber : IExpression
 	{
 		public int? i;
 		public float? f;
-		public Token? tok { get; set; } = null;
+		public Token? Tok { get; set; } = null;
 
 		public FNumber(int _i, Token? _tok)
 		{
 			i = _i;
 			f = null;
-			tok = _tok;
+			Tok = _tok;
 		}
 
 		public FNumber(float _f, Token? _tok)
 		{
 			f = _f;
 			i = null;
-			tok = _tok;
+			Tok = _tok;
 		}
 
-		public Expression eval(Env env)
+		public IExpression Eval(Env env)
 		{
 			return this;
 		}
@@ -38,7 +38,7 @@ namespace FunLang
 			}
 			return $"Num null";
 		}
-		public bool Equals(Expression exp)
+		public bool Equals(IExpression exp)
 		{
 			if (exp.GetFType() != FType.FNumber) return false;
 			var num = (FNumber)exp;
@@ -58,11 +58,11 @@ namespace FunLang
 		{
 			if (i.HasValue)
 			{
-				return new FNumber(i.Value, tok);
+				return new FNumber(i.Value, Tok);
 			}
 			else
 			{
-				return new FNumber(f.Value, tok);
+				return new FNumber(f.Value, Tok);
 			}
 		}
 		public FType GetFType()

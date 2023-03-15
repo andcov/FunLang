@@ -1,21 +1,18 @@
-﻿using System;
-using System.Xml.Linq;
-
-namespace FunLang
+﻿namespace FunLang
 {
-	public abstract class FCallable : Expression
+	public abstract class FCallable : IExpression
 	{
-		public List<FSymbol> parameters = new List<FSymbol>();
-		public Env env = new Env();
+        public List<FSymbol> parameters = new();
+		public Env env = new();
 		public bool isClosure;
-		public Token? tok { get; set; } = null;
+		public Token? Tok { get; set; } = null;
 		
 
-		public abstract Expression eval(Env env);
+		public abstract IExpression Eval(Env env);
 
-		public int ParamCount() { return parameters.Count(); }
+		public int ParamCount() { return parameters.Count; }
 		
-		public bool Equals(Expression exp) { return false; }
+		public bool Equals(IExpression exp) { return false; }
 
 		public abstract object Clone();
 		public FType GetFType() { return FType.FCallable; }
@@ -33,7 +30,7 @@ namespace FunLang
 			parameters.Add(y);
 		}
 
-		public override Expression eval(Env env)
+		public override IExpression Eval(Env env)
 		{
 			var arg1 = env[parameters[0].name];
 			var arg2 = env[parameters[1].name];
@@ -65,7 +62,7 @@ namespace FunLang
                 }
             }
 
-            throw new InvalidFunProgram($"Cannot add {arg1.GetFType()} and {arg2.GetFType()}", tok);
+            throw new InvalidFunProgram($"Cannot add {arg1.GetFType()} and {arg2.GetFType()}", Tok);
         }
 
 		public override object Clone()
@@ -86,7 +83,7 @@ namespace FunLang
 			parameters.Add(y);
 		}
 
-		public override Expression eval(Env env)
+		public override IExpression Eval(Env env)
 		{
             var arg1 = env[parameters[0].name];
             var arg2 = env[parameters[1].name];
@@ -118,7 +115,7 @@ namespace FunLang
                 }
             }
 
-            throw new InvalidFunProgram($"Cannot subtract {arg1.GetFType()} from {arg2.GetFType()}", tok);
+            throw new InvalidFunProgram($"Cannot subtract {arg1.GetFType()} from {arg2.GetFType()}", Tok);
 
         }
 
@@ -140,7 +137,7 @@ namespace FunLang
 			parameters.Add(y);
 		}
 
-		public override Expression eval(Env env)
+		public override IExpression Eval(Env env)
 		{
             var arg1 = env[parameters[0].name];
             var arg2 = env[parameters[1].name];
@@ -172,7 +169,7 @@ namespace FunLang
                 }
             }
 
-            throw new InvalidFunProgram($"Cannot multiply {arg1.GetFType()} and {arg2.GetFType()}", tok);
+            throw new InvalidFunProgram($"Cannot multiply {arg1.GetFType()} and {arg2.GetFType()}", Tok);
 
         }
 
@@ -194,7 +191,7 @@ namespace FunLang
             parameters.Add(y);
         }
 
-        public override Expression eval(Env env)
+        public override IExpression Eval(Env env)
         {
             var arg1 = env[parameters[0].name];
             var arg2 = env[parameters[1].name];
@@ -220,7 +217,7 @@ namespace FunLang
                 return new FNumber(f1 / f2, null);
             }
 
-            throw new InvalidFunProgram($"Cannot divide {arg1.GetFType()} by {arg2.GetFType()}", tok);
+            throw new InvalidFunProgram($"Cannot divide {arg1.GetFType()} by {arg2.GetFType()}", Tok);
 
         }
 
@@ -242,20 +239,20 @@ namespace FunLang
             parameters.Add(y);
         }
 
-        public override Expression eval(Env env)
+        public override IExpression Eval(Env env)
         {
             var arg1 = env[parameters[0].name];
             var arg2 = env[parameters[1].name];
 			if(arg1.GetFType() != FType.FNumber || arg2.GetFType() != FType.FNumber)
 			{
-                throw new InvalidFunProgram("Can only take modulo out of integers", tok);
+                throw new InvalidFunProgram("Can only take modulo out of integers", Tok);
             }
 			var num1 = (FNumber)arg1;
             var num2 = (FNumber)arg2;
 
             if (num1.i == null || num2.i == null)
             {
-                throw new InvalidFunProgram("Can only take modulo out of integers", tok);
+                throw new InvalidFunProgram("Can only take modulo out of integers", Tok);
             }
 
             return new FNumber(num1.i.Value % num2.i.Value, null);
@@ -279,7 +276,7 @@ namespace FunLang
             parameters.Add(y);
         }
 
-        public override Expression eval(Env env)
+        public override IExpression Eval(Env env)
         {
             var arg1 = env[parameters[0].name];
             var arg2 = env[parameters[1].name];
@@ -307,7 +304,7 @@ namespace FunLang
             parameters.Add(y);
         }
 
-        public override Expression eval(Env env)
+        public override IExpression Eval(Env env)
         {
             var arg1 = env[parameters[0].name];
             var arg2 = env[parameters[1].name];
@@ -334,13 +331,13 @@ namespace FunLang
 			parameters.Add(l);
 		}
 
-		public override Expression eval(Env env)
+		public override IExpression Eval(Env env)
 		{
 			var arg1 = env[parameters[0].name];
 			if (arg1.GetFType() == FType.FList)
 				return new FNumber(((FList)arg1).Count(), null);
 			else
-				throw new InvalidFunProgram("Can only measure length of list", tok);
+				throw new InvalidFunProgram("Can only measure length of list", Tok);
 		}
 
 		public override object Clone()
@@ -359,7 +356,7 @@ namespace FunLang
 			parameters.Add(l);
 		}
 
-		public override Expression eval(Env env)
+		public override IExpression Eval(Env env)
 		{
 			var arg1 = env[parameters[0].name];
 			if (arg1.GetFType() == FType.FList) {
@@ -367,9 +364,9 @@ namespace FunLang
 				if (l.Count >= 1)
 					return l[0];
 				else
-					throw new InvalidFunProgram("List too short", tok);
+					throw new InvalidFunProgram("List too short", Tok);
 			} else
-				throw new InvalidFunProgram("Can only take first element of list", tok);
+				throw new InvalidFunProgram("Can only take first element of list", Tok);
 		}
 
 		public override object Clone()
@@ -388,7 +385,7 @@ namespace FunLang
 			parameters.Add(l);
 		}
 
-		public override Expression eval(Env env)
+		public override IExpression Eval(Env env)
 		{
 			var arg1 = env[parameters[0].name];
 			if (arg1.GetFType() == FType.FList)
@@ -397,10 +394,10 @@ namespace FunLang
 				if (l.Count >= 2)
 					return l[1];
 				else
-					throw new InvalidFunProgram("List too short", tok);
+					throw new InvalidFunProgram("List too short", Tok);
 			}
 			else
-				throw new InvalidFunProgram("Can only take second element of list", tok);
+				throw new InvalidFunProgram("Can only take second element of list", Tok);
 		}
 
 		public override object Clone()
@@ -419,7 +416,7 @@ namespace FunLang
 			parameters.Add(l);
 		}
 
-		public override Expression eval(Env env)
+		public override IExpression Eval(Env env)
 		{
 			var arg1 = env[parameters[0].name];
 			if (arg1.GetFType() == FType.FList)
@@ -432,10 +429,10 @@ namespace FunLang
 					return res;
 				}
 				else
-					throw new InvalidFunProgram("List too short", tok);
+					throw new InvalidFunProgram("List too short", Tok);
 			}
 			else
-				throw new InvalidFunProgram("Can only take rest out of list", tok);
+				throw new InvalidFunProgram("Can only take rest out of list", Tok);
 		}
 
 		public override object Clone()
@@ -456,7 +453,7 @@ namespace FunLang
 			parameters.Add(l);
 		}
 
-		public override Expression eval(Env env)
+		public override IExpression Eval(Env env)
 		{
 			var arg1 = env[parameters[0].name];
 			var arg2 = env[parameters[1].name];
@@ -468,7 +465,7 @@ namespace FunLang
 				return l;
 			}
 			else
-				throw new InvalidFunProgram($"Can only push element onto list. Got: {arg2.GetFType()}", tok);
+				throw new InvalidFunProgram($"Can only push element onto list. Got: {arg2.GetFType()}", Tok);
 		}
 
 		public override object Clone()
@@ -487,7 +484,7 @@ namespace FunLang
 			parameters.Add(exp);
 		}
 
-		public override Expression eval(Env env)
+		public override IExpression Eval(Env env)
 		{
 			var arg1 = env[parameters[0].name];
 			Console.WriteLine(arg1);
@@ -503,19 +500,19 @@ namespace FunLang
 
 	public class FunctionCall : FCallable
 	{
-		public Expression body;
+		public IExpression body;
 
-		public FunctionCall(List<FSymbol> _parameters, Expression _body, Token _tok, bool _isClosure)
+		public FunctionCall(List<FSymbol> _parameters, IExpression _body, Token _tok, bool _isClosure)
 		{
 			parameters = _parameters;
 			body = _body;
-			tok = _tok;
+			Tok = _tok;
 			isClosure = _isClosure;
 		}
 
-		public override Expression eval(Env env)
+		public override IExpression Eval(Env env)
 		{
-			var res = body.eval(env);
+			var res = body.Eval(env);
 			if (res.GetFType() == FType.FList && ((FList)res).Count >= 1)
                 return ((FList)res)[((FList)res).Count - 1]; // return last element
             else
@@ -529,7 +526,7 @@ namespace FunLang
 			{
 				clone_params.Add((FSymbol)param.Clone());
 			}
-			return new FunctionCall(clone_params, (Expression)body.Clone(), (Token)tok.Clone(), isClosure);
+			return new FunctionCall(clone_params, (IExpression)body.Clone(), (Token)Tok.Clone(), isClosure);
 		}
 	}
 }

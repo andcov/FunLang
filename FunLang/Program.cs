@@ -27,7 +27,7 @@ define filter lambda (f l) => (
 	)
 )
 
-println map $ lambda x => (* 5 x) filter $lambda x => (== 0 % x 2) (1 2 3 4.0 5 6)
+println map $ lambda x => (* 5 x) filter $lambda x => (== 0 % x 2) (1 2 3 4 5 6)
 )
 """);
 
@@ -164,9 +164,9 @@ public class FunLang {
 		return res;
 	}
 
-    public Expression Parse() => ReadFromTokens(this.Tokenise());
+    public IExpression Parse() => ReadFromTokens(this.Tokenise());
 
-    private Expression ReadFromTokens(List<Token> tokens)
+    private IExpression ReadFromTokens(List<Token> tokens)
     {
         if (tokens.Count == 0)
 		{
@@ -209,7 +209,7 @@ public class FunLang {
 					throw new InvalidFunProgram("Function parameters can only be symbols", token);
 				}
 				var l = (FList)param;
-				if (!l.isListOf(FType.FSymbol))
+				if (!l.IsListOf(FType.FSymbol))
 				{
 					throw new InvalidFunProgram("Function parameters can only be symbols", token);
 				}
@@ -235,7 +235,7 @@ public class FunLang {
 			var body = ReadFromTokens(tokens);
 			if (body.GetFType() != FType.FList)
 			{
-				throw new InvalidFunProgram("The body of a function should be surrounded by parentheses", body.tok);
+				throw new InvalidFunProgram("The body of a function should be surrounded by parentheses", body.Tok);
 			}
 
 			return new FFunction(parameters, body, token);
@@ -248,13 +248,13 @@ public class FunLang {
 			{
 				return new FDefine((FSymbol)to_def, vals, token);
 			}
-			else if (to_def.GetFType() == FType.FList && ((FList)to_def).isListOf(FType.FSymbol))
+			else if (to_def.GetFType() == FType.FList && ((FList)to_def).IsListOf(FType.FSymbol))
 			{
 				return new FDefine((FList)to_def, vals, token);
 			}
 			else
 			{
-				throw new InvalidFunProgram("The value to be defined can only be a symbol or a list of symbols", vals.tok);
+				throw new InvalidFunProgram("The value to be defined can only be a symbol or a list of symbols", vals.Tok);
 			}
 		}
 		else if (token.Value() == "if")
@@ -320,11 +320,11 @@ public class FunLang {
 		}
 	}
 
-    public Expression Evaluate()
+    public IExpression Evaluate()
     {
 		var env = new Env();
 		env.AddStandard();
-		return Parse().eval(env);
+		return Parse().Eval(env);
 	}
 
 	public string ReportErrorFromToken(Token tok) {

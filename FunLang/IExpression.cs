@@ -1,12 +1,12 @@
 ﻿namespace FunLang
 {
-	public interface Expression : ICloneable
+    public interface IExpression : ICloneable
 	{
 		public FType GetFType();
-		public Expression eval(Env env);
-		public bool Equals(Expression exp);
+        public IExpression Eval(Env env);
+		public bool Equals(IExpression exp);
 
-        Token? tok { get; set; }
+        Token? Tok { get; set; }
     }
 
 	public enum FType {

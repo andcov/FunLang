@@ -1,18 +1,18 @@
 using System;
 namespace FunLang
 {
-	public class FChar : Expression
+	public class FChar : IExpression
 	{
 		public char ch;
-		public Token? tok { get; set; } = null;
+		public Token? Tok { get; set; } = null;
 
 		public FChar(char _ch, Token? _tok)
 		{
 			ch = _ch;
-			tok = _tok;
+			Tok = _tok;
 		}
 
-        public Expression eval(Env env)
+        public IExpression Eval(Env env)
         {
             return this;
         }
@@ -21,7 +21,7 @@ namespace FunLang
 		{
 			return $"Char {ch}";
 		}
-		public bool Equals(Expression exp)
+		public bool Equals(IExpression exp)
 		{
 			if (exp.GetFType() != FType.FChar) return false;
 			var other = (FChar)exp;
@@ -30,7 +30,7 @@ namespace FunLang
 
 		public object Clone()
 		{
-			return new FChar(ch, tok);
+			return new FChar(ch, Tok);
 		}
         public FType GetFType()
         {
