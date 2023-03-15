@@ -22,9 +22,10 @@ namespace FunLang
         {
             if (env.TryGetValue(name, out Expression? e))
             {
+                e.tok = tok;
                 return e;
             }
-            throw new InvalidOperationException("Cannot find the symbol " + name);
+            throw new InvalidFunProgram("Cannot find the symbol " + name, tok);
         }
 
         public override string ToString()

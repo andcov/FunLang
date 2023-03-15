@@ -50,7 +50,7 @@ namespace FunLang
 
 			if (res == null)
 			{
-                throw new InvalidOperationException("Cannot evaluate truth value of " + cond);
+                throw new InvalidFunProgram("Cannot evaluate truth value of " + cond, cond.tok);
             } else if (res.GetFType() == FType.FList && ((FList)res).Count >= 1)
                 return ((FList)res)[((FList)res).Count - 1]; // return last element
             else

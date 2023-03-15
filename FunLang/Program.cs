@@ -1,12 +1,10 @@
-﻿using System.Collections.Generic;
-
-namespace FunLang;
+﻿namespace FunLang;
 
 internal class Program
 {
 	private static void Main(string[] args)
 	{
-		var program = new FunLang(
+        FunLang program = new(
 """
 (
 define map lambda (f l) => (
@@ -29,14 +27,22 @@ define filter lambda (f l) => (
 	)
 )
 
-println map $lambda x => (* 5 x) filter $lambda x => (== 0 % x 2) (1 2 3 4 5 6)
+println map $ lambda x => (* 5 x) filter $lambda x => (== 0 % x 2) (1 2 3 4.0 5 6)
 )
 """);
 
-		Console.WriteLine("Parse: " + program.parse());
-		Console.WriteLine("Output: ");
-		var res = program.evaluate();
-		Console.WriteLine("Result:\n" + res);
+		try
+		{
+			program.Evaluate();
+		}
+		catch (InvalidFunProgram e)
+		{
+			Console.WriteLine(e.Message);
+            Console.WriteLine(program.ReportErrorFromToken(e.tok));
+		}
+		//Console.WriteLine("Output: ");
+		//var res = program.evaluate();
+		//Console.WriteLine("Result:\n" + res);
     }
 }
 
@@ -48,8 +54,9 @@ public class FunLang {
 		code = _code;
 	}
 
-	public List<Token> tokenise() {
-		var t_list = new List<Token>();
+    public List<Token> Tokenise()
+    {
+        List<Token> t_list = new();
 
 		var split_code = code.Replace("(", " ( ")
 			.Replace(")", " ) ")
@@ -59,7 +66,7 @@ public class FunLang {
 			.Replace("*/", " */ ")
             .Split(new char[0]).ToList();
 
-		for (int i = 0; i < split_code.Count() - 1; ++i)
+		for (int i = 0; i < split_code.Count - 1; ++i)
 		{
 			if (split_code[i] != "")
 			{
@@ -84,15 +91,15 @@ public class FunLang {
 			}
 		}
 
-		for (int i = 0; i < split_code.Count(); ++i)
+		for (int i = 0; i < split_code.Count; ++i)
 		{
 			if (split_code[i] != "" && split_code[i][0] == '"')
 			{
-				while(split_code[i][split_code[i].Length - 1] != '"')
+                while (split_code[i][^1] != '"')
 				{
-					if(i + 1 >= split_code.Count())
+					if(i + 1 >= split_code.Count)
 					{
-						throw new InvalidOperationException("Cannot find the end of the string");
+						throw new InvalidFunProgram("Cannot find the end of the string", null);
 					}
 					if (split_code[i + 1] == "")
 					{
@@ -118,13 +125,14 @@ public class FunLang {
 				position += l.Length;
 			}
 		}
-		//t_list.ForEach(tok => Console.WriteLine(tok));
-        return remove_comments(t_list);
+
+        return RemoveComments(t_list);
 	}
 
-	private List<Token> remove_comments(List<Token> toks) {
+    private static List<Token> RemoveComments(List<Token> toks)
+    {
 		int cnt = 0;
-		List<Token> res = new List<Token>();
+        List<Token> res = new();
 
         for (int i = 0; i < toks.Count; ++i)
 		{
@@ -143,27 +151,26 @@ public class FunLang {
                 cnt--;
                 if (cnt < 0)
                 {
-                    throw new InvalidOperationException("Unexpected end of comment");
+                    throw new InvalidFunProgram("Unexpected end of comment", toks[i]);
                 }
             }
         }
 
 		if (cnt > 0)
 		{
-            throw new InvalidOperationException("Comment block not closed");
+            throw new InvalidFunProgram("Comment block not closed", null);
         }
 
 		return res;
 	}
 
-    public Expression parse() {
-		return read_from_tokens(tokenise());
-	}
+    public Expression Parse() => ReadFromTokens(this.Tokenise());
 
-	private Expression read_from_tokens(List<Token> tokens) {
-		if(tokens.Count() == 0)
+    private Expression ReadFromTokens(List<Token> tokens)
+    {
+        if (tokens.Count == 0)
 		{
-			throw new InvalidOperationException("Unexpected EOF Token");
+			throw new InvalidFunProgram("Unexpected EOF Token", null);
 		}
 
 		var token = tokens.First();
@@ -171,11 +178,11 @@ public class FunLang {
 
 		if (token.Value() == "(")
 		{
-			FList list = new FList(token);
+            FList list = new(token);
 
 			while (tokens[0].Value() != ")")
 			{
-				var val = read_from_tokens(tokens);
+				var val = ReadFromTokens(tokens);
 				if (val != null)
 				{
 					list.Add(val);
@@ -188,23 +195,23 @@ public class FunLang {
 		}
 		else if (token.Value() == ")")
 		{
-			throw new InvalidOperationException("Unexpected ')'");
+			throw new InvalidFunProgram("Unexpected ')'", token);
 		}
         else if (token.Value() == "lambda")
 		{
 			var parameters = new List<FSymbol>();
 
-			var param = read_from_tokens(tokens);
+			var param = ReadFromTokens(tokens);
 			if (param.GetFType() != FType.FSymbol)
 			{
 				if (param.GetFType() != FType.FList)
 				{
-					throw new InvalidOperationException("Function parameters can only be symbols");
+					throw new InvalidFunProgram("Function parameters can only be symbols", token);
 				}
 				var l = (FList)param;
 				if (!l.isListOf(FType.FSymbol))
 				{
-					throw new InvalidOperationException("Function parameters can only be symbols");
+					throw new InvalidFunProgram("Function parameters can only be symbols", token);
 				}
 				var sym_param = new List<FSymbol>();
 				foreach (var sym in l)
@@ -222,21 +229,21 @@ public class FunLang {
 			tokens.RemoveAt(0);
 			if(arrow_token.Value() != "=>")
 			{
-				throw new InvalidOperationException("Unknown token; expected '=>'");
+				throw new InvalidFunProgram("Unknown token; expected '=>'", arrow_token);
 			}
 
-			var body = read_from_tokens(tokens);
+			var body = ReadFromTokens(tokens);
 			if (body.GetFType() != FType.FList)
 			{
-				throw new InvalidOperationException("The body of a function should be surrounded by parentheses");
+				throw new InvalidFunProgram("The body of a function should be surrounded by parentheses", body.tok);
 			}
 
 			return new FFunction(parameters, body, token);
 		}
 		else if (token.Value() == "define")
 		{
-			var to_def = read_from_tokens(tokens);
-			var vals = read_from_tokens(tokens);
+			var to_def = ReadFromTokens(tokens);
+			var vals = ReadFromTokens(tokens);
 			if (to_def.GetFType() == FType.FSymbol)
 			{
 				return new FDefine((FSymbol)to_def, vals, token);
@@ -247,29 +254,29 @@ public class FunLang {
 			}
 			else
 			{
-				throw new InvalidOperationException("The value to be defined can only be a symbol or a list of symbols");
+				throw new InvalidFunProgram("The value to be defined can only be a symbol or a list of symbols", vals.tok);
 			}
 		}
 		else if (token.Value() == "if")
 		{
 			var curr_tok = (Token)token.Clone();
-			var cond = read_from_tokens(tokens);
+			var cond = ReadFromTokens(tokens);
 
 			var then_token = tokens.First();
 			tokens.RemoveAt(0);
 			if(then_token.Value() != "then")
 			{
-				throw new InvalidOperationException("Unknown token; expected 'then'");
+				throw new InvalidFunProgram("Unknown token; expected 'then'", then_token);
 			}
-			var then = read_from_tokens(tokens);
+			var then = ReadFromTokens(tokens);
 
 			var else_token = tokens.First();
 			tokens.RemoveAt(0);
 			if(else_token.Value() != "else")
 			{
-				throw new InvalidOperationException("Unknown token; expected 'else'");
+				throw new InvalidFunProgram("Unknown token; expected 'else'", else_token);
 			}
-			var other = read_from_tokens(tokens);
+			var other = ReadFromTokens(tokens);
 
 			return new FIf(cond, then, other, curr_tok);
 		}
@@ -313,15 +320,16 @@ public class FunLang {
 		}
 	}
 
-	public Expression evaluate() {
+    public Expression Evaluate()
+    {
 		var env = new Env();
 		env.AddStandard();
-		return parse().eval(env);
+		return Parse().eval(env);
 	}
 
 	public string ReportErrorFromToken(Token tok) {
 		var split_code = code.Split('\n').ToList();
-		for (int i = 0; i < split_code.Count() - 1; ++i)
+		for (int i = 0; i < split_code.Count - 1; ++i)
 		{
 			if (split_code[i] != "")
 			{
@@ -329,10 +337,11 @@ public class FunLang {
 
 			}
 		}
-		int position = 0, next_pos = 0;
+		int next_pos = 0;
+		int line_number = 0;
 		foreach (var l in split_code)
 		{
-			position = next_pos;
+			int position = next_pos;
 			if (l.Length == 0)
 			{
 				next_pos += 1;
@@ -340,9 +349,11 @@ public class FunLang {
 			else
 			{
 				next_pos += l.Length;
-				if(tok.position >= position && tok.position < next_pos)
+                line_number += 1;
+                if (tok.position >= position && tok.position < next_pos)
 				{
-					return (l + "\n" + (new string(' ', tok.position - position)) + "^");
+					var line_string = line_number.ToString() + ": ";
+					return (line_string + l + "\n" + (new string(' ', tok.position - position + line_string.Length)) + "^");
 				}
 			}
 		}

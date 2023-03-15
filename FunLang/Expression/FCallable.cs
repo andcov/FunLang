@@ -65,7 +65,7 @@ namespace FunLang
                 }
             }
 
-            throw new InvalidOperationException($"Cannot add {arg1.GetFType()} and {arg2.GetFType()}");
+            throw new InvalidFunProgram($"Cannot add {arg1.GetFType()} and {arg2.GetFType()}", tok);
         }
 
 		public override object Clone()
@@ -118,7 +118,7 @@ namespace FunLang
                 }
             }
 
-            throw new InvalidOperationException($"Cannot subtract {arg1.GetFType()} from {arg2.GetFType()}");
+            throw new InvalidFunProgram($"Cannot subtract {arg1.GetFType()} from {arg2.GetFType()}", tok);
 
         }
 
@@ -172,7 +172,7 @@ namespace FunLang
                 }
             }
 
-            throw new InvalidOperationException($"Cannot multiply {arg1.GetFType()} and {arg2.GetFType()}");
+            throw new InvalidFunProgram($"Cannot multiply {arg1.GetFType()} and {arg2.GetFType()}", tok);
 
         }
 
@@ -220,7 +220,7 @@ namespace FunLang
                 return new FNumber(f1 / f2, null);
             }
 
-            throw new InvalidOperationException($"Cannot divide {arg1.GetFType()} by {arg2.GetFType()}");
+            throw new InvalidFunProgram($"Cannot divide {arg1.GetFType()} by {arg2.GetFType()}", tok);
 
         }
 
@@ -248,14 +248,14 @@ namespace FunLang
             var arg2 = env[parameters[1].name];
 			if(arg1.GetFType() != FType.FNumber || arg2.GetFType() != FType.FNumber)
 			{
-                throw new InvalidOperationException("Can only take modulo out of integers");
+                throw new InvalidFunProgram("Can only take modulo out of integers", tok);
             }
 			var num1 = (FNumber)arg1;
             var num2 = (FNumber)arg2;
 
             if (num1.i == null || num2.i == null)
             {
-                throw new InvalidOperationException("Can only take modulo out of integers");
+                throw new InvalidFunProgram("Can only take modulo out of integers", tok);
             }
 
             return new FNumber(num1.i.Value % num2.i.Value, null);
@@ -340,7 +340,7 @@ namespace FunLang
 			if (arg1.GetFType() == FType.FList)
 				return new FNumber(((FList)arg1).Count(), null);
 			else
-				throw new InvalidOperationException("Can only measure length of list");
+				throw new InvalidFunProgram("Can only measure length of list", tok);
 		}
 
 		public override object Clone()
@@ -367,9 +367,9 @@ namespace FunLang
 				if (l.Count >= 1)
 					return l[0];
 				else
-					throw new InvalidOperationException("List too short");
+					throw new InvalidFunProgram("List too short", tok);
 			} else
-				throw new InvalidOperationException("Can only take first element of list");
+				throw new InvalidFunProgram("Can only take first element of list", tok);
 		}
 
 		public override object Clone()
@@ -397,10 +397,10 @@ namespace FunLang
 				if (l.Count >= 2)
 					return l[1];
 				else
-					throw new InvalidOperationException("List too short");
+					throw new InvalidFunProgram("List too short", tok);
 			}
 			else
-				throw new InvalidOperationException("Can only take first element of list");
+				throw new InvalidFunProgram("Can only take second element of list", tok);
 		}
 
 		public override object Clone()
@@ -432,10 +432,10 @@ namespace FunLang
 					return res;
 				}
 				else
-					throw new InvalidOperationException("List too short");
+					throw new InvalidFunProgram("List too short", tok);
 			}
 			else
-				throw new InvalidOperationException("Can only take rest out of list");
+				throw new InvalidFunProgram("Can only take rest out of list", tok);
 		}
 
 		public override object Clone()
@@ -468,7 +468,7 @@ namespace FunLang
 				return l;
 			}
 			else
-				throw new InvalidOperationException($"Can only push element onto list. Got: {arg2.GetFType()}");
+				throw new InvalidFunProgram($"Can only push element onto list. Got: {arg2.GetFType()}", tok);
 		}
 
 		public override object Clone()

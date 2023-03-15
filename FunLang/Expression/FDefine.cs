@@ -43,7 +43,7 @@ namespace FunLang
                     }
                 } else
 				{
-                    throw new InvalidOperationException("Could not create list out of right side of definition");
+                    throw new InvalidFunProgram("Could not create list out of right side of definition", vals.tok);
                 }
 			}
 

@@ -48,15 +48,14 @@ namespace FunLang
 
                 if (functionator == true)
                 {
-                    throw new InvalidOperationException("Functionator can only be applied to a function");
+                    throw new InvalidFunProgram("Functionator can only be applied to a function", tok);
                 }
 
                 if (ev.GetFType() == FType.FCallable)
                 {
                     unwrap = true;
                     var func = (FCallable)ev;
-                    var args = new FList(null);
-                    (args, var next_i) = evalNFrom(env, i + 1, func.ParamCount(), false);
+                    (FList args, var next_i) = evalNFrom(env, i + 1, func.ParamCount(), false);
 
                     var func_env = new Env();
                     if (func.isClosure)
@@ -84,7 +83,7 @@ namespace FunLang
         {
             if (this.Count - i < n)
             {
-                throw new InvalidOperationException($"Not enough symbols to evaluate {n}, {i}, {this.Count}: {this}");
+                throw new InvalidFunProgram($"Not enough symbols to evaluate {n}, {i}, {this.Count}: {this}", tok);
             }
 
             Expression first;
@@ -100,7 +99,7 @@ namespace FunLang
 
             if (first.GetFType() != FType.FFunction && functionator == true)
             {
-                throw new InvalidOperationException("Functionator can only be applied to a function");
+                throw new InvalidFunProgram("Functionator can only be applied to a function", first.tok);
             }
 
             if (first.GetFType() == FType.FCallable)
