@@ -9,9 +9,6 @@ A Schema inspired, interpreted language written in C#.
  - function : lambda function
 
 # Import
-
- - [ ] Implement imports
-
 ```
 import math
 ```
@@ -134,10 +131,14 @@ For all operations (apart from modulo), if one of the numbers is a float and the
  - [ ] `map l f`    : runs f for every element of l and returns the resulting list
  - [ ] `filter l f` : runs f for every element of l and returns a list containing the elements for each f is true
 
+ - [ ] conversations
+
 # TODO
  - [ ] reformat code
  - [ ] make error reporting work with tabs
  - [ ] fix line counting when reporting errors
  - [ ] add support for special chars ('\n')
  - [ ] implement logical value for Expression
+ - [ ] implement imports
+ - [ ] improve printing
 
