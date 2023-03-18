@@ -105,6 +105,10 @@ This will output `(7 9 7 9 11 13 29)`
 
  - [x] `== a b`
  - [x] `!= a b`
+ - [ ] `> a b`
+ - [ ] `< a b`
+ - [ ] `>= a b`
+ - [ ] `<= a b`
  - [ ] `not a`
 	- negates the logical value of `a`
  - [ ] `or a b`
@@ -116,20 +120,26 @@ For all operations (apart from modulo), if one of the numbers is a float and the
 
 ### Standard functions
  - [x] `push e l`   : inserts e to the front of l and return the new list
- - [ ] `pop l`      : removes the first element of l and returns it, error if l is empty
+ - [x] `pop l`      : removes the first element of l and returns it, error if l is empty
+ - [ ] `append e l`
  - [x] `println s`  : prints s to stdout, followed by a new line
  - [ ] `error e`    : prints e to stderr and halts the program
- - [ ] `? input s`  : reads string from stdin into s
+ - [x] `readln`     : reads string from stdin and returns it
  - [x] `first l`    : returns the first element of l, error if l is empty
- - [x] `second l`   : returns the second element of l, error if l has one element
- - [ ] `third l`    : returns the third element of l, error if l has two elements
+ - [x] `second l`   : returns the second element of l, error if l has one element or less
+ - [x] `third l`    : returns the third element of l, error if l has two elements or less
  - [x] `rest l`     : returns everything after the first element of l, error if l is empty
  - [x] `length l`   : returns the length of l
- - [ ] `empty l`    : checks if l is empty
+ - [x] `empty l`    : checks if l is empty
+ - [ ] `reverse l`
  - [ ] `sum l`      : sums over l
- - [ ] `product l`  : multiplies over l
- - [ ] `map l f`    : runs f for every element of l and returns the resulting list
- - [ ] `filter l f` : runs f for every element of l and returns a list containing the elements for each f is true
+ - [ ] `prod l`     : multiplies over l
+ - [ ] `max a`
+ - [ ] `min a`
+ - [ ] `map f l`    : runs `f` for every element of `l` and returns the resulting list
+ - [ ] `filter f l` : runs `f` for every element of `l` and returns a list containing the elements for which `f` is true
+ - [ ] `foldl f acc l`
+ - [ ] `foldr f l acc`
 
  - [ ] conversations
 
@@ -140,5 +150,6 @@ For all operations (apart from modulo), if one of the numbers is a float and the
  - [ ] add support for special chars ('\n')
  - [ ] implement logical value for Expression
  - [ ] implement imports
- - [ ] improve printing
+ - [x] improve printing
+ - [ ] maybe get rid of FCallable
 
