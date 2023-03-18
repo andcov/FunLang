@@ -7,52 +7,104 @@ internal class Program
         FunLang program = new(
 """
 (
-define map lambda (f l) => (
-	if l then (
-		(push f first l map $f rest l)
+
+
+define readVals lambda x =>
+(
+	if x then
+	(
+        (push num readln readVals - x 1)
 	) else (
 		()
 	)
 )
 
-define filter lambda (f l) => (
+define foldl lambda (f acc l) => (
 	if l then (
-		if (f first l) then (
-			(push first l filter $f rest l)
-		) else (
-			(filter $f rest l)
-		)
+		(foldl $f (f acc first l) rest l)
 	) else (
-		()
+		acc
 	)
 )
 
-println map $ lambda x => (* 5 x) filter $lambda x => (== 0 % x 2) (1 2 3 4 5 6)
+println foldl $lambda (acc _) => ( (push num readln acc) ) () (1 1 1)
+
 )
-""");
+""", null, null, null);
 
 		try
 		{
-			program.Evaluate();
-		}
-		catch (InvalidFunProgram e)
+			Console.WriteLine("Output: ");
+			var res = program.Evaluate();
+			Console.WriteLine("Result:\n" + res);
+        }
+        catch (InvalidFunProgram e)
 		{
-			Console.WriteLine(e.Message);
-            Console.WriteLine(program.ReportErrorFromToken(e.tok));
+			Console.Error.WriteLine(e.Message);
+			if (e.tok != null)
+			{
+				Console.Error.WriteLine(program.ReportErrorFromToken(e.tok));
+			}
 		}
-		//Console.WriteLine("Output: ");
-		//var res = program.evaluate();
-		//Console.WriteLine("Result:\n" + res);
     }
 }
 
 public class FunLang {
 	public string code;
+	private StreamWriter? writer = null;
+	private StreamWriter? error = null;
+    private StreamReader? reader = null;
 
-	public FunLang(string _code)
+    public FunLang(string _code)
 	{
 		code = _code;
-	}
+		SetStreams();
+    }
+
+    public FunLang(string _code, StreamWriter? _writer, StreamWriter? _error, StreamReader? _reader)
+    {
+        code = _code;
+		writer = _writer;
+		error = _error;
+		reader = _reader;
+		SetStreams();
+    }
+
+	private void SetStreams() {
+		if (writer == null)
+		{
+			var standardOutput = new StreamWriter(Console.OpenStandardOutput());
+			standardOutput.AutoFlush = true;
+			Console.SetOut(standardOutput);
+		}
+		else
+		{
+            writer.AutoFlush = true;
+            Console.SetOut(writer);
+        }
+
+        if (error == null)
+        {
+            var standardError = new StreamWriter(Console.OpenStandardError());
+            standardError.AutoFlush = true;
+            Console.SetError(standardError);
+        }
+        else
+        {
+            error.AutoFlush = true;
+            Console.SetError(error);
+        }
+
+        if (reader == null)
+        {
+            var standardInput = new StreamReader(Console.OpenStandardInput());
+            Console.SetIn(standardInput);
+        }
+        else
+        {
+            Console.SetIn(reader);
+        }
+    }
 
     public List<Token> Tokenise()
     {
@@ -254,7 +306,7 @@ public class FunLang {
 			}
 			else
 			{
-				throw new InvalidFunProgram("The value to be defined can only be a symbol or a list of symbols", vals.Tok);
+				throw new InvalidFunProgram("The value to be defined can only be a symbol or a list of symbols", to_def.Tok);
 			}
 		}
 		else if (token.Value() == "if")

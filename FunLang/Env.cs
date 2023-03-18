@@ -8,7 +8,7 @@ namespace FunLang
             this["-"] = new Substract();
             this["*"] = new Multiply();
             this["/"] = new Divide();
-            this["%"] = new Mod();
+            this["%"] = new Modulo();
 
             this["=="] = new Equal();
             this["!="] = new Different();
@@ -16,10 +16,16 @@ namespace FunLang
             this["length"] = new Length();
             this["first"] = new First();
             this["second"] = new Second();
-            this["push"] = new Push();
+            this["third"] = new Third();
             this["rest"] = new Rest();
+            this["empty"] = new Empty();
+            this["push"] = new Push();
+            this["pop"] = new Pop();
 
             this["println"] = new Println();
+            this["readln"] = new Readln();
+
+            this["num"] = new Num();
         }
 
 		public void AddArguments(List<FSymbol> parameters, FList arguments)

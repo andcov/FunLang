@@ -1,4 +1,6 @@
-﻿namespace FunLang
+﻿using System;
+
+namespace FunLang
 {
 	public abstract class FCallable : IExpression
 	{
@@ -227,9 +229,9 @@
         }
     }
 
-    public class Mod : FCallable
+    public class Modulo : FCallable
     {
-        public Mod()
+        public Modulo()
         {
             var x = new FSymbol("__x__");
             var y = new FSymbol("__y__");
@@ -260,7 +262,7 @@
 
         public override object Clone()
         {
-            return new Mod();
+            return new Modulo();
         }
     }
 
@@ -319,7 +321,6 @@
             return new Different();
         }
     }
-
 
     public class Length : FCallable
 	{
@@ -406,7 +407,65 @@
 		}
 	}
 
-	public class Rest : FCallable
+    public class Third : FCallable
+    {
+        public Third()
+        {
+            var l = new FSymbol("__l__");
+            isClosure = false;
+
+            parameters.Add(l);
+        }
+
+        public override IExpression Eval(Env env)
+        {
+            var arg1 = env[parameters[0].name];
+            if (arg1.GetFType() == FType.FList)
+            {
+                var l = (FList)arg1;
+                if (l.Count >= 3)
+                    return l[2];
+                else
+                    throw new InvalidFunProgram("List too short", Tok);
+            }
+            else
+                throw new InvalidFunProgram("Can only take third element of list", Tok);
+        }
+
+        public override object Clone()
+        {
+            return new Third();
+        }
+    }
+
+    public class Empty : FCallable
+    {
+        public Empty()
+        {
+            var l = new FSymbol("__l__");
+            isClosure = false;
+
+            parameters.Add(l);
+        }
+
+        public override IExpression Eval(Env env)
+        {
+            var arg1 = env[parameters[0].name];
+            if (arg1.GetFType() == FType.FList)
+            {
+                return new FNumber((((FList)arg1).Count == 0) ? 1 : 0, Tok);
+            }
+            else
+                throw new InvalidFunProgram($"Can only check if list is empty. Got {arg1.GetFType()}", Tok);
+        }
+
+        public override object Clone()
+        {
+            return new Empty();
+        }
+    }
+
+    public class Rest : FCallable
 	{
 		public Rest()
 		{
@@ -474,7 +533,42 @@
 		}
 	}
 
-	public class Println : FCallable
+    public class Pop : FCallable
+    {
+        public Pop()
+        {
+            var l = new FSymbol("__l__");
+            isClosure = false;
+
+            parameters.Add(l);
+        }
+
+        public override IExpression Eval(Env env)
+        {
+            var arg1 = env[parameters[0].name];
+            if (arg1.GetFType() == FType.FList)
+            {
+				var l = (FList)arg1;
+				if (l.Count == 0) {
+                    throw new InvalidFunProgram($"List too short", Tok);
+                }
+
+				var first = l[0];
+				l.RemoveAt(0);
+
+                return first;
+            }
+            else
+                throw new InvalidFunProgram($"Can only pop element out of list. Got: {arg1.GetFType()}", Tok);
+        }
+
+        public override object Clone()
+        {
+            return new Pop();
+        }
+    }
+
+    public class Println : FCallable
 	{
 		public Println()
 		{
@@ -498,7 +592,92 @@
 		}
 	}
 
-	public class FunctionCall : FCallable
+    public class Readln : FCallable
+    {
+        public Readln()
+        {
+            isClosure = false;
+        }
+
+        public override IExpression Eval(Env env)
+        {
+            var s = Console.In.ReadLine();
+            FList l = new(Tok);
+
+            for (int i = 0; i < s.Length; ++i)
+            {
+                l.Add(new FChar(s[i], null));
+            }
+
+            return l;
+        }
+
+        public override object Clone()
+        {
+            return new Readln();
+        }
+    }
+
+    public class Num : FCallable {
+        public Num()
+        {
+            var exp = new FSymbol("__exp__");
+            isClosure = false;
+
+            parameters.Add(exp);
+        }
+
+        public override IExpression Eval(Env env)
+        {
+            var arg1 = env[parameters[0].name];
+
+            if (arg1.GetFType() == FType.FNumber)
+            {
+                return arg1;
+            }
+
+            if (arg1.GetFType() == FType.FChar)
+            {
+                var ch = (FChar)arg1;
+                return new FNumber((int)ch.ch, Tok);
+            }
+
+                if (arg1.GetFType() == FType.FList)
+            {
+                var l = (FList)arg1;
+                if (l.IsListOf(FType.FChar)) {
+                    var res = "";
+                    foreach (var el in l) {
+                        var ch = (FChar)el;
+                        res += ch.ch;
+                    }
+                    //Console.WriteLine(res);
+
+                    if (Int32.TryParse(res, out int inum))
+                    {
+                        return new FNumber(inum, Tok);
+                    }
+                    else if (float.TryParse(res, out float fnum))
+                    {
+                        return new FNumber(fnum, Tok);
+                    }
+                    else
+                    {
+                        throw new InvalidFunProgram($"Could not convert {arg1} to a number", Tok);
+                    }
+                }
+            }
+
+            throw new InvalidFunProgram($"Could not convert {arg1} to a number", Tok);
+        }
+
+        public override object Clone()
+        {
+            return new Num();
+        }
+    }
+
+    public class FunctionCall : FCallable
 	{
 		public IExpression body;
 

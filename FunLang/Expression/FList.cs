@@ -81,6 +81,8 @@ namespace FunLang
 
         public (FList, int) EvalNFrom(Env env, int i, int n, bool functionator)
         {
+            if (n == 0) return (new FList(null), i - 1);
+
             if (this.Count - i < n)
             {
                 throw new InvalidFunProgram($"Not enough symbols to evaluate {n}, {i}, {this.Count}: {this}", Tok);

@@ -1,5 +1,4 @@
-﻿using System;
-namespace FunLang
+﻿namespace FunLang
 {
     public class Token : ICloneable
     {
