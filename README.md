@@ -128,7 +128,9 @@ For all operations (apart from modulo), if one of the numbers is a float and the
  - [x] `first l`    : returns the first element of l, error if l is empty
  - [x] `second l`   : returns the second element of l, error if l has one element or less
  - [x] `third l`    : returns the third element of l, error if l has two elements or less
- - [x] `rest l`     : returns everything after the first element of l, error if l is empty
+ - [x] `last l`     : returns the last element of l, error if l is empty
+ - [x] `tail l`     : returns everything after the first element of l (the last n-1 elements), error if l is empty
+ - [x] `head l`     : returns everything before the last element of l (the first n-1 elements), error if l is empty
  - [x] `length l`   : returns the length of l
  - [x] `empty l`    : checks if l is empty
  - [ ] `reverse l`
@@ -144,12 +146,14 @@ For all operations (apart from modulo), if one of the numbers is a float and the
  - [ ] conversations
 
 # TODO
+ - [ ] implement logical value for Expression
+ - [ ] implement ordering
+ - [ ] implement imports
+
  - [ ] reformat code
  - [ ] make error reporting work with tabs
  - [ ] fix line counting when reporting errors
  - [ ] add support for special chars ('\n')
- - [ ] implement logical value for Expression
- - [ ] implement imports
  - [x] improve printing
  - [ ] make functionator work with FCallable?
 

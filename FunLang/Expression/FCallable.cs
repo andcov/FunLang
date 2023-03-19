@@ -438,6 +438,37 @@ namespace FunLang
         }
     }
 
+    public class Last : FCallable
+    {
+        public Last()
+        {
+            var l = new FSymbol("__l__");
+            isClosure = false;
+
+            parameters.Add(l);
+        }
+
+        public override IExpression Eval(Env env)
+        {
+            var arg1 = env[parameters[0].name];
+            if (arg1.GetFType() == FType.FList)
+            {
+                var l = (FList)arg1;
+                if (l.Count >= 1)
+                    return l[^1];
+                else
+                    throw new InvalidFunProgram("List too short to take last element", Tok);
+            }
+            else
+                throw new InvalidFunProgram("Can only take last element out of list", Tok);
+        }
+
+        public override object Clone()
+        {
+            return new Last();
+        }
+    }
+
     public class Empty : FCallable
     {
         public Empty()
@@ -465,9 +496,9 @@ namespace FunLang
         }
     }
 
-    public class Rest : FCallable
+    public class Tail : FCallable
 	{
-		public Rest()
+		public Tail()
 		{
 			var l = new FSymbol("__l__");
 			isClosure = false;
@@ -488,19 +519,54 @@ namespace FunLang
 					return res;
 				}
 				else
-					throw new InvalidFunProgram("List too short", Tok);
+					throw new InvalidFunProgram("List must have at least one element to take its tail", Tok);
 			}
 			else
-				throw new InvalidFunProgram("Can only take rest out of list", Tok);
+				throw new InvalidFunProgram("Can only take the tail of a list", Tok);
 		}
 
 		public override object Clone()
 		{
-			return new Rest();
+			return new Tail();
 		}
 	}
 
-	public class Push : FCallable
+    public class Head : FCallable
+    {
+        public Head()
+        {
+            var l = new FSymbol("__l__");
+            isClosure = false;
+
+            parameters.Add(l);
+        }
+
+        public override IExpression Eval(Env env)
+        {
+            var arg1 = env[parameters[0].name];
+            if (arg1.GetFType() == FType.FList)
+            {
+                var l = (FList)arg1;
+                if (l.Count >= 1)
+                {
+                    var res = (FList)l.Clone();
+                    res.RemoveAt(res.Count - 1);
+                    return res;
+                }
+                else
+                    throw new InvalidFunProgram("List must have at least one element to take its head", Tok);
+            }
+            else
+                throw new InvalidFunProgram("Can only take the head of a list", Tok);
+        }
+
+        public override object Clone()
+        {
+            return new Head();
+        }
+    }
+
+    public class Push : FCallable
 	{
 		public Push()
 		{

@@ -19,7 +19,9 @@ namespace FunLang
             this["first"] = new First();
             this["second"] = new Second();
             this["third"] = new Third();
-            this["rest"] = new Rest();
+            this["last"] = new Last();
+            this["head"] = new Head();
+            this["tail"] = new Tail();
             this["empty"] = new Empty();
             this["push"] = new Push();
             this["append"] = new Append();

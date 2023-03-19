@@ -9,7 +9,15 @@ internal class Program
 (
 define foldl lambda (f acc l) => (
 	if l then (
-		(foldl $f (f acc first l) rest l)
+		(foldl $f (f acc first l) tail l)
+	) else (
+		acc
+	)
+)
+
+define foldr lambda (f l acc) => (
+	if l then (
+		(foldr $f head l (f last l acc))
 	) else (
 		acc
 	)
@@ -18,31 +26,24 @@ define foldl lambda (f acc l) => (
 define filter lambda (f l) => (
 	if l then (
 		if (f first l) then (
-			(push first l filter $f rest l)
+			(push first l filter $f tail l)
 		) else (
-			(filter $f rest l)
+			(filter $f tail l)
 		)
 	) else (
 		()
 	)
 )
 
-define divi lambda (d n) => (
-	if (== 0 % n d) then (
-		d
+define reverse lambda l => (
+	if l then (
+		(append first l reverse tail l)
 	) else (
-		divi + 1 d n
+		()
 	)
 )
 
-define n (num readln)
-
-error n
-
-define nums (foldl $lambda (acc _) => ( (append num readln acc) ) () range n)
-define nums (filter $lambda x => (!= x 1) nums)
-define nums (filter $lambda x => (== x divi 2 x) nums)
-println if nums then ("DA") else ("NU")
+println foldr $lambda (x acc) => ( (push x acc) ) (1 2 3 4) (7 8 9)
 )
 """, null, null, null);
 
