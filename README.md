@@ -123,7 +123,7 @@ For all operations (apart from modulo), if one of the numbers is a float and the
  - [x] `append e l` : appends e to the end of l and returns the new list
  - [x] `range n`    : returns the list `(0 1 2 ... n-1)`
  - [x] `println s`  : prints s to stdout, followed by a new line
- - [ ] `error e`    : prints e to stderr and halts the program
+ - [x] `error e`    : prints e to stderr and halts the program
  - [x] `readln`     : reads string from stdin and returns it
  - [x] `first l`    : returns the first element of l, error if l is empty
  - [x] `second l`   : returns the second element of l, error if l has one element or less
@@ -151,5 +151,5 @@ For all operations (apart from modulo), if one of the numbers is a float and the
  - [ ] implement logical value for Expression
  - [ ] implement imports
  - [x] improve printing
- - [ ] maybe get rid of FCallable
+ - [ ] make functionator work with FCallable?
 

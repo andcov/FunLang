@@ -1,4 +1,6 @@
 ﻿using System;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
 namespace FunLang
 {
 	public class Env : Dictionary<string, IExpression>, ICloneable
@@ -24,6 +26,7 @@ namespace FunLang
             this["range"] = new Range();
 
             this["println"] = new Println();
+            this["error"] = new Error();
             this["readln"] = new Readln();
 
             this["num"] = new Num();

@@ -590,6 +590,29 @@ namespace FunLang
 		}
 	}
 
+    public class Error : FCallable
+    {
+        public Error()
+        {
+            var exp = new FSymbol("__exp__");
+            isClosure = false;
+
+            parameters.Add(exp);
+        }
+
+        public override IExpression Eval(Env env)
+        {
+            var arg1 = env[parameters[0].name];
+            Console.Error.WriteLine("error: " + arg1);
+            throw new InvalidFunProgram(Tok);
+        }
+
+        public override object Clone()
+        {
+            return new Error();
+        }
+    }
+
     public class Readln : FCallable
     {
         public Readln()

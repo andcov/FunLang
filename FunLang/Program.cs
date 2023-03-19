@@ -37,6 +37,8 @@ define divi lambda (d n) => (
 
 define n (num readln)
 
+error n
+
 define nums (foldl $lambda (acc _) => ( (append num readln acc) ) () range n)
 define nums (filter $lambda x => (!= x 1) nums)
 define nums (filter $lambda x => (== x divi 2 x) nums)
