@@ -20,7 +20,8 @@ namespace FunLang
             this["rest"] = new Rest();
             this["empty"] = new Empty();
             this["push"] = new Push();
-            this["pop"] = new Pop();
+            this["append"] = new Append();
+            this["range"] = new Range();
 
             this["println"] = new Println();
             this["readln"] = new Readln();

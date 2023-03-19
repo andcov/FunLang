@@ -119,9 +119,9 @@ This will output `(7 9 7 9 11 13 29)`
 For all operations (apart from modulo), if one of the numbers is a float and the other is an integer, the integer gets promoted to a float. If one of them is a char, it gets converted to its ASCII code.
 
 ### Standard functions
- - [x] `push e l`   : inserts e to the front of l and return the new list
- - [x] `pop l`      : removes the first element of l and returns it, error if l is empty
- - [ ] `append e l`
+ - [x] `push e l`   : inserts e to the front of l and returns the new list
+ - [x] `append e l` : appends e to the end of l and returns the new list
+ - [x] `range n`    : returns the list `(0 1 2 ... n-1)`
  - [x] `println s`  : prints s to stdout, followed by a new line
  - [ ] `error e`    : prints e to stderr and halts the program
  - [x] `readln`     : reads string from stdin and returns it
@@ -134,8 +134,8 @@ For all operations (apart from modulo), if one of the numbers is a float and the
  - [ ] `reverse l`
  - [ ] `sum l`      : sums over l
  - [ ] `prod l`     : multiplies over l
- - [ ] `max a`
- - [ ] `min a`
+ - [ ] `max a b`
+ - [ ] `min a b`
  - [ ] `map f l`    : runs `f` for every element of `l` and returns the resulting list
  - [ ] `filter f l` : runs `f` for every element of `l` and returns a list containing the elements for which `f` is true
  - [ ] `foldl f acc l`

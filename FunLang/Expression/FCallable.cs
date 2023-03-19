@@ -533,38 +533,36 @@ namespace FunLang
 		}
 	}
 
-    public class Pop : FCallable
+    public class Append : FCallable
     {
-        public Pop()
+        public Append()
         {
+            var e = new FSymbol("__e__");
             var l = new FSymbol("__l__");
             isClosure = false;
 
+            parameters.Add(e);
             parameters.Add(l);
         }
 
         public override IExpression Eval(Env env)
         {
             var arg1 = env[parameters[0].name];
-            if (arg1.GetFType() == FType.FList)
+            var arg2 = env[parameters[1].name];
+            if (arg2.GetFType() == FType.FList)
             {
-				var l = (FList)arg1;
-				if (l.Count == 0) {
-                    throw new InvalidFunProgram($"List too short", Tok);
-                }
+                var l = (FList)((FList)arg2).Clone();
 
-				var first = l[0];
-				l.RemoveAt(0);
-
-                return first;
+                l.Add(arg1);
+                return l;
             }
             else
-                throw new InvalidFunProgram($"Can only pop element out of list. Got: {arg1.GetFType()}", Tok);
+                throw new InvalidFunProgram($"Can only append element onto list. Got: {arg2.GetFType()}", Tok);
         }
 
         public override object Clone()
         {
-            return new Pop();
+            return new Append();
         }
     }
 
@@ -615,6 +613,45 @@ namespace FunLang
         public override object Clone()
         {
             return new Readln();
+        }
+    }
+
+    public class Range : FCallable
+    {
+        public Range()
+        {
+            var n = new FSymbol("__n__");
+            isClosure = false;
+
+            parameters.Add(n);
+        }
+
+        public override IExpression Eval(Env env)
+        {
+            var arg1 = env[parameters[0].name];
+            if (arg1.GetFType() != FType.FNumber)
+            {
+                throw new InvalidFunProgram($"Range takes a positive integer as an argument. Got: {arg1.GetFType()}", Tok);
+            }
+
+            var num = (FNumber)arg1;
+            if (num.i == null || (num.i < 0))
+            {
+                throw new InvalidFunProgram($"Range takes a positive integer as an argument. Got: {arg1}", Tok);
+            }
+
+            FList l = new(Tok);
+            for (int i = 0; i < num.i; ++i)
+            {
+                l.Add(new FNumber(i, null));
+            }
+
+            return l;  
+        }
+
+        public override object Clone()
+        {
+            return new Range();
         }
     }
 

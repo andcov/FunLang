@@ -7,18 +7,6 @@ internal class Program
         FunLang program = new(
 """
 (
-
-
-define readVals lambda x =>
-(
-	if x then
-	(
-        (push num readln readVals - x 1)
-	) else (
-		()
-	)
-)
-
 define foldl lambda (f acc l) => (
 	if l then (
 		(foldl $f (f acc first l) rest l)
@@ -27,8 +15,32 @@ define foldl lambda (f acc l) => (
 	)
 )
 
-println foldl $lambda (acc _) => ( (push num readln acc) ) () (1 1 1)
+define filter lambda (f l) => (
+	if l then (
+		if (f first l) then (
+			(push first l filter $f rest l)
+		) else (
+			(filter $f rest l)
+		)
+	) else (
+		()
+	)
+)
 
+define divi lambda (d n) => (
+	if (== 0 % n d) then (
+		d
+	) else (
+		divi + 1 d n
+	)
+)
+
+define n (num readln)
+
+define nums (foldl $lambda (acc _) => ( (append num readln acc) ) () range n)
+define nums (filter $lambda x => (!= x 1) nums)
+define nums (filter $lambda x => (== x divi 2 x) nums)
+println if nums then ("DA") else ("NU")
 )
 """, null, null, null);
 
