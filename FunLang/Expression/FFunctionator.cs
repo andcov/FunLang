@@ -7,33 +7,25 @@ namespace FunLang
 	{
         public Token? Tok { get; set; } = null;
 
-        public FFunctionator(Token? _tok)
-        {
-            Tok = _tok;
-        }
+        public FFunctionator(Token? _tok) => Tok = _tok;
 
-        public IExpression Eval(Env env)
-        {
-            return this;
-        }
+        public IExpression Eval(Env env) => this;
 
-        public override string ToString()
+        public override string ToString() => "$";
+        public override bool Equals(Object? obj)
         {
-            return "$";
-        }
-        public bool Equals(IExpression exp)
-        {
-            return false;
-        }
+            if (obj == null || obj is not IExpression)
+            {
+                return false;
+            }
+            var exp = (IExpression)obj;
 
-        public object Clone()
-        {
-            return new FFunctionator(Tok);
+            return exp.GetFType() == FType.FFunctionator;
         }
-        public FType GetFType()
-        {
-            return FType.FFunctionator;
-        }
+        public int Compare(IExpression exp) => (exp.GetFType() == FType.FFunctionator) ? 0 : -1;
+
+        public object Clone() => new FFunctionator(Tok);
+        public FType GetFType() => FType.FFunctionator;
     }
 }
 

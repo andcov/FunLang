@@ -57,20 +57,25 @@ namespace FunLang
                 return res;
 		}
 
-		public override string ToString()
+		public override string ToString() => $"If [{condition}] then [{then}] else [{other}]";
+		
+		public override bool Equals(Object? obj)
 		{
-			return $"If [{condition}] then [{then}] else [{other}]";
-		}
-		public bool Equals(IExpression exp)
-		{
-			return false;
-		}
+            if (obj == null || obj is not IExpression)
+            {
+                return false;
+            }
+            var exp = (IExpression)obj;
 
-		public object Clone()
-		{
-			return new FIf((IExpression)condition.Clone(), (IExpression)then.Clone(), (IExpression)other.Clone(), (Token)Tok.Clone());
-		}
-		public FType GetFType() { return FType.FIf; }
+            if (exp.GetFType() != FType.FIf) return false;
+			var otherIf = (FIf)exp;
+			return condition.Equals(otherIf.condition) && then.Equals(otherIf.then) && other.Equals(otherIf.other);
+        }
+        public int Compare(IExpression exp) => (this.Equals(exp)) ? 0 : -1;
+
+        public object Clone() => new FIf((IExpression)condition.Clone(), (IExpression)then.Clone(), (IExpression)other.Clone(), (Token)Tok.Clone());
+		
+		public FType GetFType() => FType.FIf;
 	}
 
 }

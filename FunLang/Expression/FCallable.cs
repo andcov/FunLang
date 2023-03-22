@@ -12,12 +12,20 @@ namespace FunLang
 
 		public abstract IExpression Eval(Env env);
 
-		public int ParamCount() { return parameters.Count; }
+		public int ParamCount() => parameters.Count;
 		
-		public bool Equals(IExpression exp) { return false; }
+		public override bool Equals(Object? obj)
+        {
+            if (obj == null || obj is not FCallable)
+            {
+                return false;
+            }
+            return this.GetType == obj.GetType;
+        }
+        public int Compare(IExpression exp) => (this.Equals(exp)) ? 0 : -1;
 
-		public abstract object Clone();
-		public FType GetFType() { return FType.FCallable; }
+        public abstract object Clone();
+		public FType GetFType() => FType.FCallable;
 	}
 
 	public class Add : FCallable
@@ -67,10 +75,7 @@ namespace FunLang
             throw new InvalidFunProgram($"Cannot add {arg1.GetFType()} and {arg2.GetFType()}", Tok);
         }
 
-		public override object Clone()
-		{
-			return new Add();
-		}
+		public override object Clone() => new Add();
 	}
 
 	public class Substract : FCallable
@@ -121,11 +126,8 @@ namespace FunLang
 
         }
 
-        public override object Clone()
-		{
-			return new Substract();
-		}
-	}
+        public override object Clone() => new Substract();
+    }
 
 	public class Multiply : FCallable
 	{
@@ -175,11 +177,8 @@ namespace FunLang
 
         }
 
-        public override object Clone()
-		{
-			return new Multiply();
-		}
-	}
+        public override object Clone() => new Multiply();
+    }
 
     public class Divide : FCallable
     {
@@ -223,10 +222,7 @@ namespace FunLang
 
         }
 
-        public override object Clone()
-        {
-            return new Divide();
-        }
+        public override object Clone() => new Divide();
     }
 
     public class Modulo : FCallable
@@ -260,10 +256,7 @@ namespace FunLang
             return new FNumber(num1.i.Value % num2.i.Value, null);
         }
 
-        public override object Clone()
-        {
-            return new Modulo();
-        }
+        public override object Clone() => new Modulo();
     }
 
     public class Equal : FCallable
@@ -282,16 +275,10 @@ namespace FunLang
         {
             var arg1 = env[parameters[0].name];
             var arg2 = env[parameters[1].name];
-            if (arg1.Equals(arg2))
-                return new FNumber(1, null);
-            else
-                return new FNumber(0, null);
+            return (arg1.Equals(arg2)) ? new FNumber(1, Tok) : new FNumber(0, Tok);
         }
 
-        public override object Clone()
-        {
-            return new Equal();
-        }
+        public override object Clone() => new Equal();
     }
 
     public class Different : FCallable
@@ -310,16 +297,98 @@ namespace FunLang
         {
             var arg1 = env[parameters[0].name];
             var arg2 = env[parameters[1].name];
-            if (!arg1.Equals(arg2))
-                return new FNumber(1, null);
-            else
-                return new FNumber(0, null);
+            return (!arg1.Equals(arg2)) ? new FNumber(1, Tok) : new FNumber(0, Tok);
         }
 
-        public override object Clone()
+        public override object Clone() => new Different();
+    }
+
+    public class Greater : FCallable
+    {
+        public Greater()
         {
-            return new Different();
+            var x = new FSymbol("__x__");
+            var y = new FSymbol("__y__");
+            isClosure = false;
+
+            parameters.Add(x);
+            parameters.Add(y);
         }
+
+        public override IExpression Eval(Env env)
+        {
+            var arg1 = env[parameters[0].name];
+            var arg2 = env[parameters[1].name];
+            return (arg1.Compare(arg2) > 0) ? new FNumber(1, Tok) : new FNumber(0, Tok);
+        }
+
+        public override object Clone() => new Greater();
+    }
+
+    public class GreaterEq : FCallable
+    {
+        public GreaterEq()
+        {
+            var x = new FSymbol("__x__");
+            var y = new FSymbol("__y__");
+            isClosure = false;
+
+            parameters.Add(x);
+            parameters.Add(y);
+        }
+
+        public override IExpression Eval(Env env)
+        {
+            var arg1 = env[parameters[0].name];
+            var arg2 = env[parameters[1].name];
+            return (arg1.Compare(arg2) >= 0) ? new FNumber(1, Tok) : new FNumber(0, Tok);
+        }
+
+        public override object Clone() => new GreaterEq();
+    }
+
+    public class Less : FCallable
+    {
+        public Less()
+        {
+            var x = new FSymbol("__x__");
+            var y = new FSymbol("__y__");
+            isClosure = false;
+
+            parameters.Add(x);
+            parameters.Add(y);
+        }
+
+        public override IExpression Eval(Env env)
+        {
+            var arg1 = env[parameters[0].name];
+            var arg2 = env[parameters[1].name];
+            return (arg1.Compare(arg2) < 0) ? new FNumber(1, Tok) : new FNumber(0, Tok);
+        }
+
+        public override object Clone() => new Less();
+    }
+
+    public class LessEq : FCallable
+    {
+        public LessEq()
+        {
+            var x = new FSymbol("__x__");
+            var y = new FSymbol("__y__");
+            isClosure = false;
+
+            parameters.Add(x);
+            parameters.Add(y);
+        }
+
+        public override IExpression Eval(Env env)
+        {
+            var arg1 = env[parameters[0].name];
+            var arg2 = env[parameters[1].name];
+            return (arg1.Compare(arg2) <= 0) ? new FNumber(1, Tok) : new FNumber(0, Tok);
+        }
+
+        public override object Clone() => new LessEq();
     }
 
     public class Length : FCallable
@@ -341,11 +410,8 @@ namespace FunLang
 				throw new InvalidFunProgram("Can only measure length of list", Tok);
 		}
 
-		public override object Clone()
-		{
-			return new Length();
-		}
-	}
+        public override object Clone() => new Length();
+    }
 
 	public class First : FCallable
 	{
@@ -370,11 +436,8 @@ namespace FunLang
 				throw new InvalidFunProgram("Can only take first element of list", Tok);
 		}
 
-		public override object Clone()
-		{
-			return new First();
-		}
-	}
+        public override object Clone() => new First();
+    }
 
 	public class Second : FCallable
 	{
@@ -401,11 +464,8 @@ namespace FunLang
 				throw new InvalidFunProgram("Can only take second element of list", Tok);
 		}
 
-		public override object Clone()
-		{
-			return new Second();
-		}
-	}
+        public override object Clone() => new Second();
+    }
 
     public class Third : FCallable
     {
@@ -432,10 +492,7 @@ namespace FunLang
                 throw new InvalidFunProgram("Can only take third element of list", Tok);
         }
 
-        public override object Clone()
-        {
-            return new Third();
-        }
+        public override object Clone() => new Third();
     }
 
     public class Last : FCallable
@@ -463,10 +520,7 @@ namespace FunLang
                 throw new InvalidFunProgram("Can only take last element out of list", Tok);
         }
 
-        public override object Clone()
-        {
-            return new Last();
-        }
+        public override object Clone() => new Last();
     }
 
     public class Empty : FCallable
@@ -490,10 +544,7 @@ namespace FunLang
                 throw new InvalidFunProgram($"Can only check if list is empty. Got {arg1.GetFType()}", Tok);
         }
 
-        public override object Clone()
-        {
-            return new Empty();
-        }
+        public override object Clone() => new Empty();
     }
 
     public class Tail : FCallable
@@ -525,11 +576,8 @@ namespace FunLang
 				throw new InvalidFunProgram("Can only take the tail of a list", Tok);
 		}
 
-		public override object Clone()
-		{
-			return new Tail();
-		}
-	}
+        public override object Clone() => new Tail();
+    }
 
     public class Head : FCallable
     {
@@ -560,10 +608,7 @@ namespace FunLang
                 throw new InvalidFunProgram("Can only take the head of a list", Tok);
         }
 
-        public override object Clone()
-        {
-            return new Head();
-        }
+        public override object Clone() => new Head();
     }
 
     public class Push : FCallable
@@ -593,11 +638,8 @@ namespace FunLang
 				throw new InvalidFunProgram($"Can only push element onto list. Got: {arg2.GetFType()}", Tok);
 		}
 
-		public override object Clone()
-		{
-			return new Push();
-		}
-	}
+        public override object Clone() => new Push();
+    }
 
     public class Append : FCallable
     {
@@ -626,10 +668,7 @@ namespace FunLang
                 throw new InvalidFunProgram($"Can only append element onto list. Got: {arg2.GetFType()}", Tok);
         }
 
-        public override object Clone()
-        {
-            return new Append();
-        }
+        public override object Clone() => new Append();
     }
 
     public class Println : FCallable
@@ -650,11 +689,8 @@ namespace FunLang
             return new FNumber(-1000, null);
         }
 
-		public override object Clone()
-		{
-			return new Println();
-		}
-	}
+        public override object Clone() => new Println();
+    }
 
     public class Error : FCallable
     {
@@ -673,10 +709,7 @@ namespace FunLang
             throw new InvalidFunProgram(Tok);
         }
 
-        public override object Clone()
-        {
-            return new Error();
-        }
+        public override object Clone() => new Error();
     }
 
     public class Readln : FCallable
@@ -699,10 +732,7 @@ namespace FunLang
             return l;
         }
 
-        public override object Clone()
-        {
-            return new Readln();
-        }
+        public override object Clone() => new Readln();
     }
 
     public class Range : FCallable
@@ -738,10 +768,7 @@ namespace FunLang
             return l;  
         }
 
-        public override object Clone()
-        {
-            return new Range();
-        }
+        public override object Clone() => new Range();
     }
 
     public class Num : FCallable {
@@ -777,8 +804,6 @@ namespace FunLang
                         var ch = (FChar)el;
                         res += ch.ch;
                     }
-                    //Console.WriteLine(res);
-
                     if (Int32.TryParse(res, out int inum))
                     {
                         return new FNumber(inum, Tok);
@@ -797,17 +822,14 @@ namespace FunLang
             throw new InvalidFunProgram($"Could not convert {arg1} to a number", Tok);
         }
 
-        public override object Clone()
-        {
-            return new Num();
-        }
+        public override object Clone() => new Num();
     }
 
     public class FunctionCall : FCallable
 	{
 		public IExpression body;
 
-		public FunctionCall(List<FSymbol> _parameters, IExpression _body, Token _tok, bool _isClosure)
+		public FunctionCall(List<FSymbol> _parameters, IExpression _body, Token? _tok, bool _isClosure)
 		{
 			parameters = _parameters;
 			body = _body;

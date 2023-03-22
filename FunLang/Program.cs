@@ -40,13 +40,21 @@ define reverse lambda l => (
 		(append first l reverse tail l)
 	) else (
 		()
-	)
-)
+	) 
+) 
 
-println foldr $lambda (x acc) => ( (push x acc) ) (1 2 3 4) (7 8 9)
-)
+/*define n (num readln)
+define list (foldl $lambda (acc _) => ( (append (num readln) acc) ) () range n)
+
+define list (filter $lambda x => (== 0 % x 2) list)
+
+println list*/
+
+println >= 134.51 134.5
+
+) 
 """, null, null, null);
-
+		
 		try
 		{
 			Console.WriteLine("Output: ");

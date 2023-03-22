@@ -12,29 +12,39 @@ namespace FunLang
 			Tok = _tok;
 		}
 
-        public IExpression Eval(Env env)
-        {
-            return this;
-        }
+        public IExpression Eval(Env env) => this;
 
-        public override string ToString()
+        public override string ToString() => $"Char {ch}";
+		public override bool Equals(Object? obj)
 		{
-			return $"Char {ch}";
-		}
-		public bool Equals(IExpression exp)
-		{
+            if (obj == null || obj is not IExpression)
+            {
+                return false;
+            }
+            var exp = (IExpression)obj;
+
+            if (exp.GetFType() == FType.FNumber) return exp.Equals(this);
 			if (exp.GetFType() != FType.FChar) return false;
-			var other = (FChar)exp;
+            var other = (FChar)exp;
 			return ch == other.ch;
 		}
-
-		public object Clone()
-		{
-			return new FChar(ch, Tok);
-		}
-        public FType GetFType()
+        public int Compare(IExpression exp)
         {
-            return FType.FChar;
+            if (this.Equals(exp)) return 0;
+            else if (exp.GetFType() == FType.FChar)
+            {
+                var other = (FChar)exp;
+                return (ch > other.ch) ? 1 : -1;
+            }
+            else if (exp.GetFType() == FType.FNumber)
+            {
+                return -1 * exp.Compare(this);
+            }
+
+            return 1;
         }
+
+        public object Clone() => new FChar(ch, Tok);
+        public FType GetFType() => FType.FChar;
     }
 }

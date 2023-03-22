@@ -6,10 +6,8 @@ namespace FunLang
     {
         public Token? Tok { get; set; } = null;
 
-        public FList(Token? _tok)
-        {
-            Tok = _tok;
-        }
+        public FList(Token? _tok) => Tok = _tok;
+
 
         public FList(IExpression exp, Token? _tok)
         {
@@ -168,8 +166,14 @@ namespace FunLang
                 return $"[{res}]";
             }
         }
-        public bool Equals(IExpression exp)
+        public override bool Equals(Object? obj)
         {
+            if (obj == null || obj is not IExpression)
+            {
+                return false;
+            }
+            var exp = (IExpression)obj;
+
             if (exp.GetFType() != FType.FList) return false;
             var other = (FList)exp;
             if (other.Count != this.Count) return false;
@@ -178,6 +182,28 @@ namespace FunLang
                 if (!this[i].Equals(other[i])) return false;
             }
             return true;
+        }
+        public int Compare(IExpression exp)
+        {
+            if (this.Equals(exp)) return 0;
+            else if (exp.GetFType() == FType.FChar || exp.GetFType() == FType.FNumber)
+            {
+                return -1 * exp.Compare(this);
+            }
+            else if (exp.GetFType() == FType.FList)
+            {
+                var other = (FList)exp;
+                int i = 0;
+                while(i < this.Count && i < other.Count)
+                {
+                    var cmp = this[i].Compare(other[i]);
+                    if (cmp != 0) return cmp;
+                    i++;
+                }
+                return (this.Count > other.Count) ? 1 : -1;
+            }
+
+            return 1;
         }
 
         public object Clone()
@@ -190,10 +216,6 @@ namespace FunLang
 
             return res;
         }
-        public FType GetFType()
-        {
-            return FType.FList;
-        }
+        public FType GetFType() => FType.FList;
     }
-
 }

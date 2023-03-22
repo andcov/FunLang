@@ -63,12 +63,29 @@ namespace FunLang
 			}
 			return res;
 		}
-		public bool Equals(IExpression exp)
+		public override bool Equals(Object? obj)
 		{
-			return false;
-		}
+            if (obj == null || obj is not IExpression)
+            {
+                return false;
+            }
+            var exp = (IExpression)obj;
 
-		public object Clone()
+            if (exp.GetFType() != FType.FDefine) return false;
+            var otherDef = (FDefine)exp;
+			if (sym != null)
+			{
+				return sym.Equals(otherDef.sym) && vals.Equals(otherDef.vals);
+			}
+			else if (list != null)
+			{
+                return list.Equals(otherDef.list) && vals.Equals(otherDef.vals);
+            }
+			return false;
+        }
+        public int Compare(IExpression exp) => (this.Equals(exp)) ? 0 : -1;
+
+        public object Clone()
 		{
 			if (sym != null)
 			{
@@ -79,6 +96,6 @@ namespace FunLang
 				return new FDefine((FList)list.Clone(), (IExpression)vals.Clone(), (Token)Tok.Clone());
 			}
 		}
-		public FType GetFType() { return FType.FDefine; }
+		public FType GetFType() => FType.FDefine;
 	}
 }

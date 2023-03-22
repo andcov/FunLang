@@ -14,12 +14,9 @@ namespace FunLang
 			Tok = _tok;
 		}
 
-		public IExpression Eval(Env env)
-		{
-			return this;
-		}
+		public IExpression Eval(Env env) => this;
 
-		public FCallable GetFCallable() { return new FunctionCall(parameters, body, Tok, true); }
+		public FCallable GetFCallable() => new FunctionCall(parameters, body, Tok, true);
 
 		public override string ToString()
 		{
@@ -34,19 +31,26 @@ namespace FunLang
 			}
 			return $"Func [{res}] => {body}";
 		}
-		public bool Equals(IExpression exp)
+		public override bool Equals(Object? obj)
 		{
-			if (exp.GetFType() != FType.FFunction) return false;
+            if (obj == null || obj is not IExpression)
+            {
+                return false;
+            }
+            var exp = (IExpression)obj;
+
+            if (exp.GetFType() != FType.FFunction) return false;
 			var other = (FFunction)exp;
 			if (parameters.Count != other.parameters.Count) return false;
 			for (int i = 0; i < parameters.Count; ++i)
 			{
 				if (!this.parameters[i].Equals(other.parameters[i])) return false;
 			}
-			return this.body == other.body;
+			return this.body.Equals(other.body);
 		}
+        public int Compare(IExpression exp) => (this.Equals(exp)) ? 0 : -1;
 
-		public object Clone()
+        public object Clone()
 		{
 			var clone_params = new List<FSymbol>();
 			foreach (var param in parameters)
@@ -55,6 +59,6 @@ namespace FunLang
 			}
 			return new FFunction(clone_params, (IExpression)body.Clone(), (Token)Tok.Clone());
 		}
-		public FType GetFType() { return FType.FFunction; }
+		public FType GetFType() => FType.FFunction;
 	}
 }

@@ -28,23 +28,21 @@ namespace FunLang
             throw new InvalidFunProgram("Cannot find the symbol " + name, Tok);
         }
 
-        public override string ToString()
+        public override string ToString() => $"Sym {name}";
+        public override bool Equals(Object? obj)
         {
-            return $"Sym {name}";
-        }
-        public bool Equals(IExpression exp)
-        {
+            if (obj == null || obj is not IExpression)
+            {
+                return false;
+            }
+            var exp = (IExpression)obj;
+
             if (exp.GetFType() != FType.FSymbol) return false;
             return this.name == ((FSymbol)exp).name;
         }
+        public int Compare(IExpression exp) => (this.Equals(exp)) ? 0 : -1;
 
-        public object Clone()
-        {
-            return new FSymbol(name, Tok);
-        }
-        public FType GetFType()
-        {
-            return FType.FSymbol;
-        }
+        public object Clone() => new FSymbol(name, Tok);
+        public FType GetFType() => FType.FSymbol;
     }
 }

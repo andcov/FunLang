@@ -14,6 +14,10 @@ namespace FunLang
 
             this["=="] = new Equal();
             this["!="] = new Different();
+            this[">"] = new Greater();
+            this[">="] = new GreaterEq();
+            this["<"] = new Less();
+            this["<="] = new LessEq();
 
             this["length"] = new Length();
             this["first"] = new First();
