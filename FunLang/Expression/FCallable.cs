@@ -23,6 +23,7 @@ namespace FunLang
             return this.GetType == obj.GetType;
         }
         public int Compare(IExpression exp) => (this.Equals(exp)) ? 0 : -1;
+        public bool IsTrue() => true;
 
         public abstract object Clone();
 		public FType GetFType() => FType.FCallable;

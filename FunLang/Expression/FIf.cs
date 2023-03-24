@@ -23,35 +23,10 @@ namespace FunLang
 
             IExpression? res = null;
 
-            if (cond.GetFType() == FType.FList)
-			{
-				if (((FList)cond).Count != 0)
-				{
-					res = then.Eval(env);
-				}
-				else
-				{
-					res = other.Eval(env);
-				}
-			}
-			else if (cond.GetFType() == FType.FNumber)
-			{
-				var num = (FNumber)cond;
+			if (cond.IsTrue()) res = then.Eval(env);
+			else res = other.Eval(env);
 
-				if (!num.Equals(new FNumber(0, null)))
-				{
-					res = then.Eval(env);
-				}
-				else
-				{
-					res = other.Eval(env);
-				}
-			}
-
-			if (res == null)
-			{
-                throw new InvalidFunProgram("Cannot evaluate truth value of " + cond, cond.Tok);
-            } else if (res.GetFType() == FType.FList && ((FList)res).Count >= 1)
+			if (res.GetFType() == FType.FList && ((FList)res).Count >= 1)
                 return ((FList)res)[^1]; // return last element
             else
                 return res;
@@ -72,6 +47,7 @@ namespace FunLang
 			return condition.Equals(otherIf.condition) && then.Equals(otherIf.then) && other.Equals(otherIf.other);
         }
         public int Compare(IExpression exp) => (this.Equals(exp)) ? 0 : -1;
+        public bool IsTrue() => throw new InvalidFunProgram("Cannot evaluate truth value of FIf.", Tok);
 
         public object Clone() => new FIf((IExpression)condition.Clone(), (IExpression)then.Clone(), (IExpression)other.Clone(), (Token)Tok.Clone());
 		

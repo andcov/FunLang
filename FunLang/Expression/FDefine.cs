@@ -84,6 +84,7 @@ namespace FunLang
 			return false;
         }
         public int Compare(IExpression exp) => (this.Equals(exp)) ? 0 : -1;
+        public bool IsTrue() => throw new InvalidFunProgram("Cannot evaluate truth value of FDefine.", Tok);
 
         public object Clone()
 		{

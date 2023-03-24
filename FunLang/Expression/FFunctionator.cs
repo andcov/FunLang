@@ -23,6 +23,7 @@ namespace FunLang
             return exp.GetFType() == FType.FFunctionator;
         }
         public int Compare(IExpression exp) => (exp.GetFType() == FType.FFunctionator) ? 0 : -1;
+        public bool IsTrue() => throw new InvalidFunProgram("Cannot evaluate truth value of FFunctionator.", Tok);
 
         public object Clone() => new FFunctionator(Tok);
         public FType GetFType() => FType.FFunctionator;

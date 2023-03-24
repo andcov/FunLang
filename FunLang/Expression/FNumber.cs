@@ -88,6 +88,7 @@ namespace FunLang
 
 			return 1;
 		}
+		public bool IsTrue() => !this.Equals(new FNumber(0, null));
 
 		public object Clone()
 		{

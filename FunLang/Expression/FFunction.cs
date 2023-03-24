@@ -49,6 +49,7 @@ namespace FunLang
 			return this.body.Equals(other.body);
 		}
         public int Compare(IExpression exp) => (this.Equals(exp)) ? 0 : -1;
+		public bool IsTrue() => true;
 
         public object Clone()
 		{

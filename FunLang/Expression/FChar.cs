@@ -43,6 +43,7 @@ namespace FunLang
 
             return 1;
         }
+        public bool IsTrue() => true;
 
         public object Clone() => new FChar(ch, Tok);
         public FType GetFType() => FType.FChar;

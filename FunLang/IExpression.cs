@@ -6,7 +6,7 @@
         public IExpression Eval(Env env);
 		public bool Equals(Object obj);
         public int Compare(IExpression exp);
-
+		public bool IsTrue();
 
         Token? Tok { get; set; }
     }

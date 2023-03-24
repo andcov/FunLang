@@ -205,6 +205,7 @@ namespace FunLang
 
             return 1;
         }
+        public bool IsTrue() => Count > 0;
 
         public object Clone()
         {

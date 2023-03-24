@@ -41,17 +41,19 @@ define reverse lambda l => (
 	) else (
 		()
 	) 
-) 
+)
 
-/*define n (num readln)
+define cif lambda num => (
+	if (< num 10) then (
+		1
+	) else (
+		+ 1 cif / num 10
+	)
+)
+
+define n (num readln)
 define list (foldl $lambda (acc _) => ( (append (num readln) acc) ) () range n)
-
-define list (filter $lambda x => (== 0 % x 2) list)
-
-println list*/
-
-println >= 134.51 134.5
-
+println if (foldl $lambda (acc x) => ( if (!= 0 % cif x 2) then 0 else acc ) 1 list) then ("DA") else ("NU")
 ) 
 """, null, null, null);
 		

@@ -146,8 +146,8 @@ For all operations (apart from modulo), if one of the numbers is a float and the
  - [ ] conversations
 
 # TODO
- - [ ] implement logical value for Expression
- - [ ] implement ordering
+ - [x] implement logical value for Expression
+ - [x] implement ordering
  - [ ] implement imports
 
  - [ ] reformat code

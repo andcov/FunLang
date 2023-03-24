@@ -41,6 +41,7 @@ namespace FunLang
             return this.name == ((FSymbol)exp).name;
         }
         public int Compare(IExpression exp) => (this.Equals(exp)) ? 0 : -1;
+        public bool IsTrue() => throw new InvalidFunProgram("Cannot evaluate truth value of FSymbol.", Tok);
 
         public object Clone() => new FSymbol(name, Tok);
         public FType GetFType() => FType.FSymbol;
