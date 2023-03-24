@@ -19,6 +19,10 @@ namespace FunLang
             this["<"] = new Less();
             this["<="] = new LessEq();
 
+            this["not"] = new Not();
+            this["or"] = new Or();
+            this["and"] = new And();
+
             this["length"] = new Length();
             this["first"] = new First();
             this["second"] = new Second();

@@ -105,15 +105,16 @@ This will output `(7 9 7 9 11 13 29)`
 
  - [x] `== a b`
  - [x] `!= a b`
- - [ ] `> a b`
- - [ ] `< a b`
- - [ ] `>= a b`
- - [ ] `<= a b`
- - [ ] `not a`
+ - [x] `> a b`
+ - [x] `>= a b`
+ - [x] `< a b`
+ - [x] `<= a b`
+
+ - [x] `not a`
 	- negates the logical value of `a`
- - [ ] `or a b`
+ - [x] `or a b`
 	- logical or
- - [ ] `and a b`
+ - [x] `and a b`
 	- logical and
 
 For all operations (apart from modulo), if one of the numbers is a float and the other is an integer, the integer gets promoted to a float. If one of them is a char, it gets converted to its ASCII code.

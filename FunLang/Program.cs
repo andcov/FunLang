@@ -51,9 +51,7 @@ define cif lambda num => (
 	)
 )
 
-define n (num readln)
-define list (foldl $lambda (acc _) => ( (append (num readln) acc) ) () range n)
-println if (foldl $lambda (acc x) => ( if (!= 0 % cif x 2) then 0 else acc ) 1 list) then ("DA") else ("NU")
+if (and $cif 1) then (println "yap") else (println "nope")
 ) 
 """, null, null, null);
 		

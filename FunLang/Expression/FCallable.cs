@@ -392,6 +392,69 @@ namespace FunLang
         public override object Clone() => new LessEq();
     }
 
+    public class Not : FCallable
+    {
+        public Not()
+        {
+            var x = new FSymbol("__x__");
+            isClosure = false;
+
+            parameters.Add(x);
+        }
+
+        public override IExpression Eval(Env env)
+        {
+            var arg1 = env[parameters[0].name];
+            return (arg1.IsTrue()) ? new FNumber(0, Tok) : new FNumber(1, Tok);
+        }
+
+        public override object Clone() => new Not();
+    }
+
+    public class Or : FCallable
+    {
+        public Or()
+        {
+            var x = new FSymbol("__x__");
+            var y = new FSymbol("__y__");
+            isClosure = false;
+
+            parameters.Add(x);
+            parameters.Add(y);
+        }
+
+        public override IExpression Eval(Env env)
+        {
+            var arg1 = env[parameters[0].name];
+            var arg2 = env[parameters[1].name];
+            return (arg1.IsTrue() || arg2.IsTrue()) ? new FNumber(1, Tok) : new FNumber(0, Tok);
+        }
+
+        public override object Clone() => new Or();
+    }
+
+    public class And : FCallable
+    {
+        public And()
+        {
+            var x = new FSymbol("__x__");
+            var y = new FSymbol("__y__");
+            isClosure = false;
+
+            parameters.Add(x);
+            parameters.Add(y);
+        }
+
+        public override IExpression Eval(Env env)
+        {
+            var arg1 = env[parameters[0].name];
+            var arg2 = env[parameters[1].name];
+            return (arg1.IsTrue() && arg2.IsTrue()) ? new FNumber(1, Tok) : new FNumber(0, Tok);
+        }
+
+        public override object Clone() => new And();
+    }
+
     public class Length : FCallable
 	{
 		public Length()
